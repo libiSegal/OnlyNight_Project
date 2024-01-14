@@ -11,8 +11,10 @@ def search_hotels(search_key, geo_code, check_in, check_out, rooms, stars):
     nights = data_handler.calculate_number_of_nights(check_in, check_out)
     check_in = data_handler.change_dates_format(check_in)
     unique_key = search.search_post_request(search_key, country_code, geo_code, check_in, nights, rooms, stars)
+    # print('unique key', unique_key)
     xml_hotels = search.get_hotels_request(unique_key)
     urls_hotels = search.get_hotels_urls(xml_hotels)
+    print(search.get_response_status(xml_hotels))
     print("urls", urls_hotels)
     search.download_hotels_data(urls_hotels, path_to_download)
 

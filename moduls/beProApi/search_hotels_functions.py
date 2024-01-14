@@ -90,6 +90,12 @@ def get_hotels_request(unique_key):
     return response.text
 
 
+def get_response_status(response):
+    root = ET.fromstring(response)
+    status = [item.find('Status').text for item in root.findall('.//ItemsLinkAsyncResults')]
+    return status[0]
+
+
 def get_hotels_urls(xml_response):
     """
     except from the response only the url fields
