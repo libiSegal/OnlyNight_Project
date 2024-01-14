@@ -1,5 +1,6 @@
 import gzip
 import json
+import time
 import base64
 import requests
 import xml.etree.ElementTree as ET
@@ -72,25 +73,59 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
     return get_the_unique_key(response.json())
 
 
+def get_the_hotels_details(unique_key):
+    """
+    Send request to get details of all hotels till all data return
+    :param unique_key: the unique key of the post request to get the details of hotels
+    :return: a list of urls with the details of all hotels
+    """
+    response = get_hotels_request(unique_key)
+    multi_key = get_response_multiKey(response)
+    status = get_response_status(response)
+    urls = get_hotels_urls(response)
+    while status != "CompleteMayBeDisposed" and multi_key != 'Not finish, but empty':
+        response = get_hotels_request(unique_key)
+        multi_key = get_response_multiKey(response)
+        status = get_response_status(response)
+        urls += get_hotels_urls(response)
+    return urls
+
+
 def get_hotels_request(unique_key):
     """
     Send a get request by unique key to the bepro api and return a xml with urls of hotels
     :param unique_key: the unique key to get from the bepro api the data
     :return: the response
     """
+    time_sleep = 20
     get_hotels_details_url = (f"https://pub_srv.beprotravel.net/BePro/api/Hotels/GetJsonResults?"
                               f"token={unique_key}&compress=false")
-
     headers = {
         'BEPROCOMPANY': '135',
         'Authorization': 'Basic Qz0xMzU6RD0xOkI9MjAwOlU9MjI1MDpQPTE5RDdC'
     }
-    print(get_hotels_details_url)
+    time.sleep(time_sleep)
     response = requests.request("GET", get_hotels_details_url, headers=headers, verify=False)
     return response.text
 
 
+def get_response_multiKey(response):
+    """
+    return the multi key of the xml response
+    :param response: a xml response that return from the bepro api
+    :return: the multi key of the xml response
+    """
+    root = ET.fromstring(response)
+    multi_key = [item.find('MultiKey').text for item in root.findall('.//ItemsLinkAsyncResults')]
+    return multi_key[0]
+
+
 def get_response_status(response):
+    """
+    return the status of the xml response
+    :param response: a xml response that return from the bepro api
+    :return: the status of the xml response
+    """
     root = ET.fromstring(response)
     status = [item.find('Status').text for item in root.findall('.//ItemsLinkAsyncResults')]
     return status[0]
@@ -102,9 +137,8 @@ def get_hotels_urls(xml_response):
     :param xml_response: the xml response
     :return: a list of urls
     """
-    print(xml_response)
     root = ET.fromstring(xml_response)
-    urls = [item.find('Url').text for item in root.findall('.//ItemsLinkAsyncResults')]
+    urls = [item.find('Url').text for item in root.findall('ItemsLinkAsyncResults')]
     return urls
 
 
@@ -118,6 +152,11 @@ def get_the_unique_key(response):
 
 
 def decompress(compressed_file):
+    """
+    decompress the file that return from the bepro api request
+    :param compressed_file: the file to decompress
+    :return: the decompressed file
+    """
     if compressed_file is None or len(compressed_file) == 0:
         return None
     if "<?xml version" in compressed_file:
@@ -143,16 +182,24 @@ def decompress(compressed_file):
             return buffer.decode('utf-8')
 
 
-def download_hotels_data(url_list, output_path):
+def download_hotels_data(url_list):
+    """
+    Download the files from the url list and save them in jsons files
+    :param url_list: a list of the urls to download
+    :return: None
+    """
     if url_list[0] is None:
         return "No hotels found"
-    for url in url_list:
-        response = requests.get(url, verify=False)
-        compressed_file = response.text
-        decompressed_file = decompress(compressed_file)
-        if decompressed_file is not None:
-            output_path = f"{output_path}/{url}.json"
-            save_hotels_data(decompressed_file, output_path)
+    for i in range(len(url_list)):
+        if url_list[i] is not None:
+            response = requests.get(url_list[i], verify=False)
+            compressed_file = response.text
+            decompressed_file = decompress(compressed_file)
+            if decompressed_file is not None:
+                name = get_name_from_url(url_list[i])
+                output_path = "files"
+                output_path = f"{output_path}/{name}.json"
+                save_hotels_data(decompressed_file, output_path)
 
 
 def save_hotels_data(data, output_path):
@@ -162,5 +209,16 @@ def save_hotels_data(data, output_path):
     :param output_path: the path to save the json file
     :return: None
     """
-    with open(output_path, 'w') as f:
-        json.dump(data, f, indent=4)
+    with open(output_path, 'w', encoding="utf-8") as f:
+        f.write(data)
+
+
+def get_name_from_url(url):
+    """
+    Get name from each file to download
+    :param url: to take the name from
+    :return: the name of the file
+    """
+    name = url.split('/')[-1]
+    name = name.replace('.zip', '')
+    return name
