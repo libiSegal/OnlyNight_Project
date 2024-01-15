@@ -71,6 +71,7 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
         'Authorization': 'Basic Qz0xMzU6RD0xOkI9MjAwOlU9MjI1MDpQPTE5RDdC'
     }
     response = requests.request("POST", post_search_url, headers=headers, data=payload, verify=False)
+    print(response.text)
     return get_the_unique_key(response.json())
 
 

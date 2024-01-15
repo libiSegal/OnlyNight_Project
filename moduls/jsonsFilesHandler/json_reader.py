@@ -4,7 +4,7 @@ from os.path import isfile, join
 
 
 def read_json_file(filename):
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding="utf8") as f:
         data = json.load(f)
     return data
 
