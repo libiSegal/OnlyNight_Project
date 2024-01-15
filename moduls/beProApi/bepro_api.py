@@ -14,27 +14,3 @@ def search_hotels(search_key, geo_code, check_in, check_out, rooms, stars):
     search.download_hotels_data(urls_hotels)
 
 
-search_hotels("Berlin, Germany",
-
-              {
-                  "Latitude": "52.52000659999999",
-                  "Longitude": "13.404954",
-                  "PIP": "N"
-              },
-              "2024/03/08",
-              "2024/03/9",
-              [
-                  {
-                      "SysRoomCode": "O2A0C",
-                      "NumRoom": 1,
-                      "NumCots": 0,
-                      "NumPax": 2,
-                      "NumAdt": 2,
-                      "NumCnn": 0,
-                      "CnnAge1": 0,
-                      "CnnAge2": 0,
-                      "CnnAge3": 0,
-                      "CnnAge4": 0
-                  }
-              ],
-              3)

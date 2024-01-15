@@ -4,6 +4,7 @@ import time
 import base64
 import requests
 import xml.etree.ElementTree as ET
+from datetime import date
 from io import BytesIO
 
 
@@ -97,36 +98,37 @@ def get_hotels_request(unique_key):
     :param unique_key: the unique key to get from the bepro api the data
     :return: the response
     """
-    time_sleep = 20
+
     get_hotels_details_url = (f"https://pub_srv.beprotravel.net/BePro/api/Hotels/GetJsonResults?"
                               f"token={unique_key}&compress=false")
     headers = {
         'BEPROCOMPANY': '135',
         'Authorization': 'Basic Qz0xMzU6RD0xOkI9MjAwOlU9MjI1MDpQPTE5RDdC'
     }
+    time_sleep = 8
     time.sleep(time_sleep)
     response = requests.request("GET", get_hotels_details_url, headers=headers, verify=False)
     return response.text
 
 
-def get_response_multiKey(response):
+def get_response_multiKey(xml_response):
     """
     return the multi key of the xml response
-    :param response: a xml response that return from the bepro api
+    :param xml_response: a xml response that return from the bepro api
     :return: the multi key of the xml response
     """
-    root = ET.fromstring(response)
+    root = ET.fromstring(xml_response)
     multi_key = [item.find('MultiKey').text for item in root.findall('.//ItemsLinkAsyncResults')]
     return multi_key[0]
 
 
-def get_response_status(response):
+def get_response_status(xml_response):
     """
     return the status of the xml response
-    :param response: a xml response that return from the bepro api
+    :param xml_response: a xml response that return from the bepro api
     :return: the status of the xml response
     """
-    root = ET.fromstring(response)
+    root = ET.fromstring(xml_response)
     status = [item.find('Status').text for item in root.findall('.//ItemsLinkAsyncResults')]
     return status[0]
 
@@ -142,13 +144,13 @@ def get_hotels_urls(xml_response):
     return urls
 
 
-def get_the_unique_key(response):
+def get_the_unique_key(json_response):
     """
     extract the unique key of the response
-    :param response: the searching response from the api
+    :param json_response: the searching response from the api
     :return: the unique key field
     """
-    return response.get('results').get('sysResinfo').get('uniqueKey')
+    return json_response.get('results').get('sysResinfo').get('uniqueKey')
 
 
 def decompress(compressed_file):
@@ -220,5 +222,5 @@ def get_name_from_url(url):
     :return: the name of the file
     """
     name = url.split('/')[-1]
-    name = name.replace('.zip', '')
+    name = name.replace('.zip', "_"+str(date.today()))
     return name
