@@ -1,8 +1,7 @@
+from moduls.beProApi import bepro_api
 import uvicorn
 from pydantic import BaseModel
-from fastapi import FastAPI, APIRouter
-import bepro_api
-
+from fastapi import FastAPI, APIRouter, HTTPException
 
 app = FastAPI()
 
@@ -35,10 +34,11 @@ async def search_opportunities(body: PostBody):
         "Longitude": "13.404954",
         "PIP": "N"
     }
-    bepro_api.search_hotels(body.search_key, geo_code, body.check_in, body.check_out, rooms, body.starts)
-
-    # file = json_reader.get_json_file_names(r'C:\Users\onlyn\PycharmProjects\searchOpportunities\files')[0]
-    # return json_reader.read_json_file('files/' + file)
+    try:
+        bepro_api.search_hotels(body.search_key, geo_code, body.check_in, body.check_out, rooms, body.starts)
+        return "The request was successfully received"
+    except HTTPException as e:
+        return HTTPException(status_code=500)
 
 
 app.include_router(search_opportunities_router, prefix='/search_opportunities')
