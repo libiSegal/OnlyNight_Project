@@ -71,6 +71,7 @@ def build_room(num_adults, num_children, cnn_ages=None):
     :param cnn_ages: optional -the age of the children if num_children != 0
     :return: the schema room
     """
+    rooms = []
     max_cnn = 4
     room = {}
     sys_room_code = "O" + str(num_adults) + "A" + str(num_children) + "C"
@@ -92,7 +93,8 @@ def build_room(num_adults, num_children, cnn_ages=None):
             else:
                 room["CnnAge" + str(i + 1)] = 0
 
-    return room
+    rooms.append(room)
+    return rooms
 
 
 
