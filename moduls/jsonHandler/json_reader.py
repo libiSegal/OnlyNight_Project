@@ -23,10 +23,6 @@ def get_hotel_BPID(hotel):
     return hotel.get("Item").get("Bpid")
 
 
-def get_hotel_rooms(hotel):
-    return hotel.get("RoomClasses")
-
-
 def remove_duplicates_hotels_ids(hotels_id_list):
     hotels_id_without_duplicates = list(set(hotels_id_list))
     return hotels_id_without_duplicates
