@@ -9,3 +9,8 @@ cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};\
                       Trusted_Connection=yes;')
 
 cursor = cnxn.cursor()
+
+
+
+
+

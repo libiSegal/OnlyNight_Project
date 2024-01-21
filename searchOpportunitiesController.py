@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
 from moduls.beProApi import bepro_api
 from example import example_obj
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -17,6 +18,17 @@ class PostBody(BaseModel):
     num_adults: int
     num_children: int
     children_age: list
+
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @search_opportunities_router.post('/')
