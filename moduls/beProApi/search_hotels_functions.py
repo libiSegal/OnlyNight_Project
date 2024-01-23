@@ -3,6 +3,7 @@ import json
 import time
 import base64
 import requests
+from moduls.beProApi import bepro_definitions as definition
 import xml.etree.ElementTree as ET
 from datetime import date
 from io import BytesIO
@@ -29,7 +30,7 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
             "SearchResponceType": 7,
             "SearchType": 0,
             "GeoSearch": {
-                "Radius": 8,
+                "Radius": definition.radius,
                 "HavePIP": False,
                 "SearchKey": {
                     "Name": search_key
@@ -52,19 +53,19 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
             "SearchTypeId": 138,
             "Command": 0,
             "LanguageCode": "en",
-            "CompanyId": 135,
-            "DepartmentId": 1,
-            "BranchId": 200,
-            "UserCode": 2250,
-            "MaxMilliSecondsTimeToWait": 80000
+            "CompanyId": definition.company_id,
+            "DepartmentId": definition.department_id,
+            "BranchId": definition.branc_id,
+            "UserCode": definition.user_code,
+            "MaxMilliSecondsTimeToWait": definition.max_milli_seconds_time_to_wait
         },
         "Header": {
-            "CompanyId": 135,
-            "DepartmentId": 1,
-            "BranchId": 200,
-            "UserCode": 2250,
-            "UserId": "2250",
-            "UserPWD": "19D7B"
+            "CompanyId": definition.company_id,
+            "DepartmentId": definition.department_id,
+            "BranchId": definition.branc_id,
+            "UserCode": definition.user_code,
+            "UserId": definition.user_id,
+            "UserPWD": definition.user_pwd
         }
     })
     headers = {

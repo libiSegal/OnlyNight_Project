@@ -1,8 +1,7 @@
 import json
+import os
 from os import listdir
 from os.path import isfile, join
-
-files_folder_name = "files"
 
 
 def read_json_file(filename):
@@ -11,8 +10,10 @@ def read_json_file(filename):
     return json_data
 
 
-def get_json_file_names(folder_path):
-    return [item for item in listdir(folder_path) if isfile(join(folder_path, item))]
+def get_json_file_names(files_folder_path):
+    name_list = [item for item in listdir(files_folder_path) if isfile(join(files_folder_path, item))]
+    print(name_list, files_folder_path)
+    return name_list
 
 
 def get_hotels_from_json(json_file):
@@ -39,8 +40,10 @@ def remove_duplicates_hotels(hotels, hotels_ids):
     return hotels_without_duplicates
 
 
-def get_all_data(folder_name):
-    files_names = get_json_file_names(folder_name)
+def get_all_data(files_folder_name):
+    folder_name = 'files'
+    files_names = get_json_file_names(files_folder_name)
+    print(files_names)
     hotel_data_list = []
     hotel_ids_list = []
     for name in files_names:
@@ -52,9 +55,14 @@ def get_all_data(folder_name):
     return hotel_data_list, hotel_ids_list
 
 
-def get_clean_data(folder_name):
-    hotels_date, hotel_ids_list = get_all_data(folder_name)
+def get_clean_data(folder_path):
+    hotels_date, hotel_ids_list = get_all_data(folder_path)
     return remove_duplicates_hotels(hotels_date, hotel_ids_list)
 
 
-hotels_data = get_clean_data(files_folder_name)
+def delete_jsons_files(folder_path):
+    for filename in os.listdir(folder_path):
+        if os.path.isfile(os.path.join(folder_path, filename)):
+            os.remove(os.path.join(folder_path, filename))
+
+# hotels_data = get_clean_data("files")

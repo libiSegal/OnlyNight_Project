@@ -2,6 +2,7 @@ example_obj = {
     "Hotels": [
         {
             "Item": {
+                "Id": 1,
                 "Name": "Hotel Augusta Am Kurfürstendamm",
                 "Stars": 3.0,
                 "AddressInfo": {
@@ -37,6 +38,7 @@ example_obj = {
             },
             "Rooms": [
                 {
+                    "Id": 1,
                     "Desc": "Double or Twin Room - Non-refundable",
                     "Price": 202.6,
                     "NumAdt": 2,
@@ -52,13 +54,9 @@ example_obj = {
                         "Code": "RO",
                         "Desc": "Room Only"
                     },
-                    "HistoryPrice": {
-                        "2023": 200,
-                        "2022": 220,
-                        "2020": 250
-                    }
                 },
                 {
+                    "Id": 2,
                     "Desc": "Comfort Double Room - Non-refundable",
                     "Price": 249.12,
                     "NumAdt": 2,
@@ -74,13 +72,9 @@ example_obj = {
                         "Code": "RO",
                         "Desc": "Room Only"
                     },
-                    "HistoryPrice": {
-                        "2023": 200,
-                        "2022": 260,
-                        "2020": 300
-                    }
                 },
                 {
+                    "Id": 4,
                     "Desc": "Double or Twin Room - Non-refundable - Breakfast included in the price",
                     "Price": 256.49,
                     "NumAdt": 2,
@@ -95,17 +89,13 @@ example_obj = {
                     "MetaData": {
                         "Code": "BB",
                         "Desc": "Breakfast included"
-                    },
-                    "HistoryPrice": {
-                        "2023": 250,
-                        "2022": 270,
-                        "2020": 380
                     }
                 }
             ]
         },
         {
             "Item": {
+                "Id": 2,
                 "Name": "EUROPA CITY",
                 "Stars": 3.0,
                 "AddressInfo": {
@@ -141,6 +131,7 @@ example_obj = {
             },
             "Rooms": [
                 {
+                    "Id": 3,
                     "Desc": "Double Room",
                     "Price": 112.9,
                     "NumAdt": 2,
@@ -156,11 +147,7 @@ example_obj = {
                         "Code": "RO",
                         "desc": "Room Only"
                     },
-                    "HistoryPrice": {
-                        "2023": 100,
-                        "2022": 80,
-                        "2020": 200
-                    }
+
                 }
             ]
         }
