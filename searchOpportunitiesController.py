@@ -2,10 +2,10 @@ import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
 from hotels_example import example_obj
-from moduls.beProApi import bepro_api
+from moduls.beProApi import search_hotels_data_functions_handler
+from dbConnections import basic_sql_queries
 from prices_example import price_example_object
 from fastapi.middleware.cors import CORSMiddleware
-
 
 app = FastAPI()
 
@@ -16,8 +16,6 @@ prices_router = APIRouter()
 class PostBody(BaseModel):
     search_key: str
     stars: int
-    check_in: str
-    check_out: str
     num_adults: int
     num_children: int
     children_age: list
@@ -42,11 +40,9 @@ async def search_opportunities(body: PostBody):
         "PIP": "N"
     }
     try:
-        bepro_api.search_hotels(body.search_key, geo_code, body.stars, body.check_in, body.check_out, body.num_adults,
-                                body.num_children, body.children_age)
-
-        return "The request was successfully received"
-    except HTTPException as e:
+        basic_sql_queries.insert_search_setting(body.stars, body.search_key)
+        return "The request was successfully received - search setting added successfully"
+    except HTTPException:
         return HTTPException(status_code=500)
 
 

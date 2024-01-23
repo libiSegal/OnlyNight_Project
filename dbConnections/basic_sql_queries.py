@@ -1,4 +1,4 @@
-from unicodedata import decimal
+
 
 from dbConnections import sql_db_connection as connection
 
@@ -27,7 +27,7 @@ def insert_images(hotel_id, img, desc):
 
 def insert_room_data(room_data):
     insert_room = "dbo.insertRoom"
-    room_values = (room_data.hotel_id, room_data.price,room_data.desc, room_data.sysCode, room_data.check_in,
+    room_values = (room_data.hotel_id, room_data.price, room_data.desc, room_data.sysCode, room_data.check_in,
                    room_data.check_out, room_data.nights, room_data.b_token, room_data.limit_date, room_data.remarks)
     print(room_values)
     room_id = connection.exec_stored_procedure(insert_room, room_values)[0]
@@ -41,3 +41,10 @@ def insert_cnn_ages(room_id, age):
     insert_cnn_ages_procedure = "dbo.insertCnnAge"
     cnn_age_values = (room_id, age)
     connection.exec_stored_procedure(insert_cnn_ages_procedure, cnn_age_values)
+
+
+def insert_search_setting(stars, search_key):
+    insert_search_settings_procedure = "dbo.insertSearchSetting"
+    search_settings_values = (search_key, stars)
+    connection.exec_stored_procedure(insert_search_settings_procedure, search_settings_values)
+

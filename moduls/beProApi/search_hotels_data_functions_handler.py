@@ -25,6 +25,11 @@ def calculate_number_of_nights(check_in, check_out):
             datetime.strptime(check_in, "%Y/%m/%d")).days
 
 
+def get_city_name(search_key):
+    names = search_key.split(',')
+    return names[0]
+
+
 def get_country_name(search_key):
     """
     Get only the country name from search key
@@ -95,6 +100,3 @@ def build_room(num_adults, num_children, cnn_ages=None):
 
     rooms.append(room)
     return rooms
-
-
-
