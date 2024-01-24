@@ -187,7 +187,7 @@ def decompress(compressed_file):
                     break
                 total_read += bytes_read
 
-            return buffer.decode('utf-8')
+            return buffer.decode('utf-8').rstrip('\x00')
 
 
 def download_hotels_data(url_list):

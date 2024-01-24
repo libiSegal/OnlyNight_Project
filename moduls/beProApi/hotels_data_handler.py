@@ -4,6 +4,11 @@ from moduls.objects.room_data_obj import RoomData
 
 
 def handle_data_hotel(hotel):
+    """
+    Make ready the date from beProApi to insert into the db
+    :param hotel: the data to be inserted
+    :return: None
+    """
     item = hotel.get('Item')
     address_info = hotel.get('AddressInfo')
     position = hotel.get('Position')
@@ -23,6 +28,12 @@ def handle_data_hotel(hotel):
 
 
 def handle_room_data(hotel_id, rooms):
+    """
+    Make ready the date room from beProApi to insert into the db
+    :param hotel_id: the id of the hotel
+    :param rooms: the room data to be inserted
+    :return: None
+    """
     for room in rooms:
         hotel_rooms = room.get('HotelRooms')[0]
         code = room.get('Board').get('Basis').get('Code')
@@ -39,8 +50,6 @@ def handle_room_data(hotel_id, rooms):
         room_id = sql_queries.insert_room_data(room_data)
         if room_id is not None:
             room_id = int(room_id[0])
-        if hotel_rooms.get('SysCode')[3] != 0:
-            pass
-
-
-
+        if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
+            if hotel_rooms.get('SysCode')[3] != 0:
+                pass

@@ -1,3 +1,4 @@
+# settings for bePro post search request
 radius = 8
 company_id = 135
 department_id = 1

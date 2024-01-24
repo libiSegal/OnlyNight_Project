@@ -1,9 +1,12 @@
-
-
 from dbConnections import sql_db_connection as connection
 
 
 def inset_hotel_data(hotel_data):
+    """
+    Inset hotel data to database
+    :param hotel_data: the data to inset
+    :return: the new row id
+    """
     insert_address = "dbo.insertAddress"
     address_values = (hotel_data.hotel_address, hotel_data.hotel_phone,
                       hotel_data.hotel_fax, hotel_data.hotel_city, hotel_data.hotel_country)
@@ -20,12 +23,24 @@ def inset_hotel_data(hotel_data):
 
 
 def insert_images(hotel_id, img, desc):
+    """
+    Inset hotels images to database
+    :param hotel_id: the hotel id to insert
+    :param img: the hotel image to insert
+    :param desc: the img description to insert
+    :return: None
+    """
     insert_images_procedure = "dbo.insertImg"
     image_values = (hotel_id, img, desc)
     connection.exec_stored_procedure(insert_images_procedure, image_values)
 
 
 def insert_room_data(room_data):
+    """
+    Inset room data to database
+    :param room_data: the room data to insert
+    :return: the new row id
+    """
     insert_room = "dbo.insertRoom"
     room_values = (room_data.hotel_id, room_data.price, room_data.desc, room_data.sysCode, room_data.check_in,
                    room_data.check_out, room_data.nights, room_data.b_token, room_data.limit_date, room_data.remarks)
@@ -38,13 +53,33 @@ def insert_room_data(room_data):
 
 
 def insert_cnn_ages(room_id, age):
+    """
+    insert child age into the database
+    :param room_id: the room id to insert
+    :param age: the age to insert
+    :return: None
+    """
     insert_cnn_ages_procedure = "dbo.insertCnnAge"
     cnn_age_values = (room_id, age)
     connection.exec_stored_procedure(insert_cnn_ages_procedure, cnn_age_values)
 
 
 def insert_search_setting(stars, search_key):
+    """
+    insert search settings into the database
+    :param stars: the number of stars to insert
+    :param search_key: the city and country to insert
+    :return: Nome
+    """
     insert_search_settings_procedure = "dbo.insertSearchSetting"
     search_settings_values = (search_key, stars)
     connection.exec_stored_procedure(insert_search_settings_procedure, search_settings_values)
 
+
+def select_search_setting():
+    """
+    select search settings from the database
+    :return: the selected search settings
+    """
+    search_settings_view = "dbo.selectSearchSettings"
+    return connection.exec_view(search_settings_view)

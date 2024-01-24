@@ -12,22 +12,14 @@ def get_geo_code(place):
         location = data['results'][0]['geometry']['location']
         latitude = location['lat']
         longitude = location['lng']
-        return latitude, longitude
+        return {
+            "latitude": latitude,
+            "longitude": longitude,
+            "PIP": "N"
+        }
     else:
         return None
 
 
-geo_code_exe = {
-    "Latitude": "52.52000659999999",
-    "Longitude": "13.404954",
-    "PIP": "N"
-}
 
-# Example usage
-place_name = "Eiffel Tower, Paris, France"
-geo_code = get_geo_code(place_name)
-if geo_code:
-    latitude, longitude = geo_code
-    print(f"The coordinates of {place_name} are: ({latitude}, {longitude})")
-else:
-    print(f"Failed to get the coordinates of {place_name}")
+

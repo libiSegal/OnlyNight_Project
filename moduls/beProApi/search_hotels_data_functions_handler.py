@@ -21,13 +21,7 @@ def calculate_number_of_nights(check_in, check_out):
     :param check_out: the second date
     :return: the number of nights
     """
-    return (datetime.strptime(check_out, "%Y/%m/%d") -
-            datetime.strptime(check_in, "%Y/%m/%d")).days
-
-
-def get_city_name(search_key):
-    names = search_key.split(',')
-    return names[0]
+    return (check_out - check_in).days
 
 
 def get_country_name(search_key):

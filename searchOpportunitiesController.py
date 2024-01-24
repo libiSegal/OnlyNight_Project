@@ -1,3 +1,4 @@
+import requests
 import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
@@ -34,11 +35,6 @@ app.add_middleware(
 
 @search_opportunities_router.post('/')
 async def search_opportunities(body: PostBody):
-    geo_code = {
-        "Latitude": "52.52000659999999",
-        "Longitude": "13.404954",
-        "PIP": "N"
-    }
     try:
         basic_sql_queries.insert_search_setting(body.stars, body.search_key)
         return "The request was successfully received - search setting added successfully"
@@ -63,3 +59,5 @@ app.include_router(search_opportunities_router, prefix='/api/search_opportunitie
 app.include_router(prices_router, prefix='/api/search_opportunities/prices')
 
 uvicorn.run(app, host='127.0.0.1', port=8000, access_log=False)
+
+
