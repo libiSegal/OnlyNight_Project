@@ -83,3 +83,36 @@ def select_search_setting():
     """
     search_settings_view = "dbo.selectSearchSettings"
     return connection.exec_view(search_settings_view)
+
+
+def select_statistically_information_by_month(month_number, year_number, segment_name):
+    view_name = ""
+    match month_number:
+        case 1:
+            view_name = "dbo.selectJanuaryData"
+        case 2:
+            view_name = "dbo.selectFebruaryData"
+        case 3:
+            view_name = "dbo.selectMarchData"
+        case 4:
+            view_name = "dbo.selectAprilData"
+        case 5:
+            view_name = "dbo.selectMayData"
+        case 6:
+            view_name = "dbo.selectJuneData"
+        case 7:
+            view_name = "dbo.selectJulyData"
+        case 8:
+            view_name = "dbo.selectAugustData"
+        case 9:
+            view_name = "dbo.selectSeptemberData"
+        case 10:
+            view_name = "dbo.selectOctoberData"
+        case 11:
+            view_name = "dbo.selectNovemberData"
+        case 12:
+            view_name = "dbo.selectDecemberData"
+        case _:
+            return ValueError("Month number is not in the range")
+
+    return connection.exec_view(view_name)
