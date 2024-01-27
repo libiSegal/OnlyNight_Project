@@ -1,6 +1,6 @@
 example_obj = {
     "Hotels": [
-        {
+        { 
             "Item": {
                 "Id": 1,
                 "Name": "Hotel Augusta Am Kurfürstendamm",
