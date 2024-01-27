@@ -8,7 +8,7 @@ from dbConnections import basic_sql_queries
 from prices_example import price_example_object
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI()   
 
 search_opportunities_router = APIRouter()
 prices_router = APIRouter()
