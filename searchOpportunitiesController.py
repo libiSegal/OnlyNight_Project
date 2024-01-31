@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from moduls.beProApi import bepro_api
 from moduls.algorithm import opportunity_response_handler
 
-app = FastAPI()
+app = FastAPI()   
 
 search_opportunities_router = APIRouter()
 bookings_router = APIRouter()
