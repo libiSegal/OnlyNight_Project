@@ -44,7 +44,6 @@ def insert_room_data(room_data):
     insert_room = "dbo.insertRoom"
     room_values = (room_data.hotel_id, room_data.price, room_data.desc, room_data.sysCode, room_data.check_in,
                    room_data.check_out, room_data.nights, room_data.b_token, room_data.limit_date, room_data.remarks)
-    print(room_values)
     room_id = connection.exec_stored_procedure(insert_room, room_values)[0]
     room_id = int(room_id)
     insert_mata_data = "dbo.insertMetadata"
@@ -76,6 +75,15 @@ def insert_search_setting(stars, search_key):
     connection.exec_stored_procedure(insert_search_settings_procedure, search_settings_values)
 
 
+def insert_opportunities(opportunity_data):
+    procedure_name = 'dbo.insertOpportunities'
+    oppo_values = (opportunity_data.room_id, opportunity_data.hotel_id, opportunity_data.price, opportunity_data.desc,
+                   opportunity_data.sysCode, opportunity_data.check_in, opportunity_data.check_out,
+                   opportunity_data.nights, opportunity_data.b_token, opportunity_data.limit_date,
+                   opportunity_data.remarks, opportunity_data.code, opportunity_data.code_description)
+    connection.exec_stored_procedure(procedure_name, oppo_values)
+
+
 def select_search_setting():
     """
     select search settings from the database
@@ -85,7 +93,57 @@ def select_search_setting():
     return connection.exec_view(search_settings_view)
 
 
-def select_statistically_information_by_month(month_number, year_number, segment_name):
+def select_data_of_opportunities(ids):
+    ids_length = len(ids)
+    res = []
+    if ids_length > 0:
+        db_data = connection.exec_query(ids)
+        for row in db_data:
+            res.append(row)
+    return res
+
+
+def select_opportunities():
+    view_name = 'dbo.selectOpportunities'
+    res = connection.exec_view(view_name)
+    opportunities = []
+    for row in res:
+        opportunities.append(row)
+
+    return opportunities
+
+
+def select_data_of_hotels_by_id(ids):
+    hotels = []
+    res = connection.exec_select_hotel_data_query(ids)
+    for row in res:
+        hotels.append(row)
+    return hotels
+
+
+def select_number_of_rooms():
+    procedure_name = "dbo.selectNumberOfRooms"
+    res = connection.exec_stored_procedure(procedure_name, "")
+    return int(res[0])
+
+
+def select_first_room_id():
+    procedure_name = "dbo.selectFirstRoomId"
+    res = connection.exec_stored_procedure(procedure_name, "")
+    return int(res[0])
+
+
+def selectRooms(start, end):
+    func_name = "dbo.selectRooms"
+    return connection.exec_function(func_name, start, end)
+
+
+def selectRoomsPrices():
+    view_name = "dbo.selectRoomsPrices"
+    return connection.exec_view(view_name).fetchall()
+
+
+def select_statistically_information_by_month(month_number):
     view_name = ""
     match month_number:
         case 1:
@@ -114,5 +172,4 @@ def select_statistically_information_by_month(month_number, year_number, segment
             view_name = "dbo.selectDecemberData"
         case _:
             return ValueError("Month number is not in the range")
-
     return connection.exec_view(view_name)

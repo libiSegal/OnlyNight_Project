@@ -38,3 +38,39 @@ def exec_view(name):
     return data
 
 
+def exec_function(function_name, *args):
+    val = args
+    print(val)
+    sql = f"SELECT * FROM {function_name}{args}"
+    print(sql)
+    data = cursor.execute(sql)
+    return data
+
+
+def exec_query(ids):
+    string_ids = str(ids).replace("[", "").replace("]", "")
+    sql = f"""SELECT 
+              rooms.ID, rooms.Hotel_id, rooms.Price, rooms.Description, 
+              rooms.Sys_code, rooms.Check_in, rooms.Check_out, rooms.Nights, 
+              rooms.BToken, rooms.Limit_date,rooms.Remarks,
+              metadata.Code, metadata.Description
+              FROM rooms 
+             JOIN metadata ON metadata.Room_ID = rooms.ID
+             WHERE rooms.ID IN ({string_ids})"""
+    data = cursor.execute(sql).fetchall()
+    return data
+
+
+def exec_select_hotel_data_query(ids):
+    string_ids = str(ids).replace("[", "").replace("]", "")
+    sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
+                addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
+                positions.Latitude, positions.Longitude, positions.Pip,
+				images.Description, images.Img
+                FROM hotels 
+                JOIN addressesInfo ON addressesInfo.ID = Address_id 
+                JOIN positions ON positions.ID = Position_id
+				JOIN images ON images.Hotel_id = hotels.ID
+                WHERE hotels.ID IN ({string_ids})"""
+    data = cursor.execute(sql).fetchall()
+    return data

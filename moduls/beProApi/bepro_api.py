@@ -1,10 +1,9 @@
 from moduls import google_maps_api
-from moduls.beProApi import search_hotels_data_functions_handler as search_hotels_data
-from moduls.beProApi import search_hotels_functions as search_htl
-from moduls.beProApi import hotels_data_handler as hotel_handler
+from moduls.beProApi import charge_condition
 from moduls.jsonHandler import json_reader as jdr
 from moduls.beProApi import bepro_definitions as defn
-
+from moduls.beProApi import search_hotels_functions as search_htl
+from moduls.beProApi import search_hotels_data_functions_handler as search_hotels_data
 
 URL = 'https://pub_srv.beprotravel.net/BePro'
 
@@ -27,15 +26,16 @@ def search_hotels(search_key, stars, check_in, check_out):
     unique_key = search_htl.search_post_request(search_key, country_code, geo_code, check_in, nights, rooms, stars)
     urls_hotels = search_htl.get_the_hotels_details(unique_key)
     search_htl.download_hotels_data(urls_hotels)
-    insert_hotels_data_into_db()
+    search_htl.insert_hotels_data_into_db()
     jdr.delete_jsons_files('files')
 
 
-def insert_hotels_data_into_db():
-    """
-    the function take the hotels from the files directory and insert them into the database
-    :return: None
-    """
-    hotels = jdr.get_clean_data(r'files')
-    for hotel in hotels:
-        hotel_handler.handle_data_hotel(hotel)
+def check_charge_condition(room_token, price):
+    (supplier_city_code, supplier_code, item_code, check_in,
+     check_out, nights) = charge_condition.extract_data_from_room_token(room_token)
+    response = charge_condition.charge_condition_request(supplier_code, supplier_city_code, check_in, check_out, nights,
+                                                         item_code, room_token)
+    info_gross_rate = charge_condition.extract_infoGrossRate(response)
+    if info_gross_rate > price:
+        return True, info_gross_rate
+    return False, price

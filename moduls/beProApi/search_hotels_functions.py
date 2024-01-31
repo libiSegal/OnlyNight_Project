@@ -3,10 +3,12 @@ import json
 import time
 import base64
 import requests
-from moduls.beProApi import bepro_definitions as definition
 import xml.etree.ElementTree as ET
 from datetime import date
 from io import BytesIO
+from moduls.jsonHandler import json_reader as jdr
+from moduls.beProApi import bepro_definitions as definition
+from moduls.beProApi import hotels_data_handler as hotel_handler
 
 last_index = './/ItemsLinkAsyncResults'
 
@@ -230,3 +232,13 @@ def get_name_from_url(url):
     name = url.split('/')[-1]
     name = name.replace('.zip', "_" + str(date.today()))
     return name
+
+
+def insert_hotels_data_into_db():
+    """
+    the function take the hotels from the files directory and insert them into the database
+    :return: None
+    """
+    hotels = jdr.get_clean_data(r'files')
+    for hotel in hotels:
+        hotel_handler.handle_data_hotel(hotel)

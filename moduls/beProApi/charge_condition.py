@@ -62,7 +62,7 @@ def extract_data_from_room_token(room_token):
     check_in = room_token_data[4]
     nights = room_token_data[5]
     check_out = calculate_check_out(check_in, nights)
-    return supplier_city_code, supplier_code, item_code, check_in, check_out,nights
+    return supplier_city_code, supplier_code, item_code, check_in, check_out, nights
 
 
 def calculate_check_out(check_in, nights):

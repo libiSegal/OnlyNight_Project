@@ -5,7 +5,7 @@ def get_geo_code(place):
     api_key = "AIzaSyCcsqWN49bqMFOO2lekiixxC6eUzxuJhG4"
     url = f"https://maps.googleapis.com/maps/api/geocode/json?address={place}&key={api_key}"
 
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     data = response.json()
 
     if data['status'] == 'OK':

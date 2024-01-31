@@ -28,4 +28,4 @@ def get_daily_data():
             bepro_api.search_hotels(search_setting.get("search_key"), search_setting.get("stars"), day, next_day_date)
 
 
-# get_daily_data()
+get_daily_data()
