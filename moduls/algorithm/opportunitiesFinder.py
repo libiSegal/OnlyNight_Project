@@ -6,7 +6,7 @@ from moduls.objects.opportunity_data_obj import OpportunityData
 
 def search_opportunities(segment):
     opportunities = []
-    arbitrage = 170
+    arbitrage = 150
     rooms = statisticall_information.get_rooms()
     shorted_rooms_by_month = statisticall_information.short_rooms_by_month(rooms)
     for i in range(1, 13):
@@ -21,14 +21,14 @@ def search_opportunities(segment):
 
 def grop_opportunities_hotels(opportunities_list):
     hotels_ids = []
-    for k, g in itertools.groupby(opportunities_list, lambda x: x[2]):
+    for k, g in itertools.groupby(opportunities_list, lambda x: x[1]):
         hotels_ids.append(k)
     return hotels_ids
 
 
 def match_room_hotel(hotels, opportunities_list):
     hotels_and_rooms = {}
-    for k, g in itertools.groupby(opportunities_list, lambda x: x[2]):
+    for k, g in itertools.groupby(opportunities_list, lambda x: x[1]):
         for hotel in hotels:
             if k == hotel[0]:
                 hotels_and_rooms[k] = list(hotel) + list(g)

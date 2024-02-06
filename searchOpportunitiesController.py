@@ -75,7 +75,6 @@ async def charge_condition(room_token, price):
 @search_opportunities_router.get('/')
 async def get_opportunities():
     try:
-        print(opportunity_response_handler.get_opportunities_response())
         return opportunity_response_handler.get_opportunities_response()
     except HTTPException:
         return HTTPException(status_code=500)

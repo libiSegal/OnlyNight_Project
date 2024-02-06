@@ -61,9 +61,4 @@ def short_rooms_by_month(rooms):
     return [january, february, march, april, may, june, july, august, september, october, november, december]
 
 
-def get_list_ids_to_search_in_db(opportunities_ids):
-    ids_to_search = ''
-    for opportunity in opportunities_ids:
-        ids_to_search += f"{opportunity}|"
-    ids_to_search = ids_to_search[:-1]
-    return ids_to_search
+

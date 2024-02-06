@@ -114,7 +114,7 @@ def get_hotels_request(unique_key):
         'BEPROCOMPANY': '135',
         'Authorization': 'Basic Qz0xMzU6RD0xOkI9MjAwOlU9MjI1MDpQPTE5RDdC'
     }
-    time_sleep = 8
+    time_sleep = 6
     time.sleep(time_sleep)
     response = requests.request("GET", get_hotels_details_url, headers=headers, verify=False)
     return response.text
@@ -173,7 +173,7 @@ def decompress(compressed_file):
     if "<?xml version" in compressed_file:
         return compressed_file
 
-    g_zip_buffer = base64.b64decode(compressed_file)
+    g_zip_buffer = base64.urlsafe_b64decode(compressed_file)
 
     with BytesIO() as memory_stream:
         data_length = int.from_bytes(g_zip_buffer[:4], byteorder='little')

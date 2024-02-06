@@ -74,6 +74,7 @@ def exec_query_select_hotel_data(ids):
                 JOIN addressesInfo ON addressesInfo.ID = Address_id 
                 JOIN positions ON positions.ID = Position_id
 				JOIN images ON images.Hotel_id = hotels.ID
-                WHERE hotels.ID IN ({string_ids})"""
+                WHERE hotels.ID IN ( {string_ids} )"""
+    print(sql)
     data = cursor.execute(sql).fetchall()
     return data
