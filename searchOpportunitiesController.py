@@ -1,26 +1,37 @@
 import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
-from hotels_example import example_obj
-from dbConnections import basic_sql_queries
+from dbConnections import sql_queries
 from prices_example import price_example_object
 from fastapi.middleware.cors import CORSMiddleware
 from moduls.beProApi import bepro_api
 from moduls.algorithm import opportunity_response_handler
+from moduls.beProApi import search_one_hotel
 
-app = FastAPI()   
+app = FastAPI()
 
 search_opportunities_router = APIRouter()
+search_one_hotel_opportunities_router = APIRouter()
 bookings_router = APIRouter()
 prices_router = APIRouter()
 
 
-class SearchPostBody(BaseModel):
+class SearchHotelsPostBody(BaseModel):
     search_key: str
     stars: int
     num_adults: int
     num_children: int
     children_age: list
+
+
+class SearchOneHotelPostBody(BaseModel):
+    city: str
+    hotel_name: str
+    stars: float
+    check_in: str
+    check_out: str
+    price: float
+    location: float
 
 
 origins = ["*"]
@@ -35,12 +46,18 @@ app.add_middleware(
 
 
 @search_opportunities_router.post('/')
-async def search_opportunities(body: SearchPostBody):
+async def search_opportunities(body: SearchHotelsPostBody):
     try:
-        basic_sql_queries.insert_search_setting(body.stars, body.search_key)
+        sql_queries.insert_search_setting(body.stars, body.search_key)
         return {"massage": "The request was successfully received - search setting added successfully"}
     except HTTPException:
         return HTTPException(status_code=500)
+
+
+@search_one_hotel_opportunities_router.post('/')
+async def search_one_hotels(body: SearchOneHotelPostBody):
+    return search_one_hotel.bePro_search_one(body.hotel_name, body.stars, body.check_in, body.check_out, body.city,
+                                             body.location, body.price)
 
 
 @bookings_router.get('/')
@@ -58,6 +75,7 @@ async def charge_condition(room_token, price):
 @search_opportunities_router.get('/')
 async def get_opportunities():
     try:
+        print(opportunity_response_handler.get_opportunities_response())
         return opportunity_response_handler.get_opportunities_response()
     except HTTPException:
         return HTTPException(status_code=500)
@@ -73,6 +91,7 @@ async def get_prices(hotel_id, room_id):
 
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities')
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities/opportunities')
+app.include_router(search_one_hotel_opportunities_router, prefix='/api/search_opportunities/one_hotel')
 app.include_router(prices_router, prefix='/api/search_opportunities/prices')
 app.include_router(bookings_router, prefix='/api/search_opportunities/bookings')
 

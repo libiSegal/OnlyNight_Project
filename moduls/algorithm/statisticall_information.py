@@ -1,9 +1,9 @@
-from dbConnections import basic_sql_queries
+from dbConnections import sql_queries
 from datetime import datetime
 
 
 def get_statistically_information_for_segment(segment, month, year):
-    statistically_information_table = basic_sql_queries.select_statistically_information_by_month(month)
+    statistically_information_table = sql_queries.select_statistically_information_by_month(month)
     statistically_information_table_for_segment = []
     for row in statistically_information_table:
         if row[4] == segment: # and row[3] == year
@@ -25,7 +25,7 @@ def get_occupancy_for_month(statistically_information):
 
 
 def get_rooms():
-    return basic_sql_queries.selectRoomsPrices()
+    return sql_queries.selectRoomsPrices()
 
 
 def short_rooms_by_month(rooms):

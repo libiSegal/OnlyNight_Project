@@ -13,9 +13,10 @@ from moduls.beProApi import hotels_data_handler as hotel_handler
 last_index = './/ItemsLinkAsyncResults'
 
 
-def search_post_request(search_key, country_code, geo_code, check_in, nights, rooms, stars):
+def search_post_request(search_key, country_code, geo_code, check_in, nights, rooms, stars, radius):
     """
     This function will send a post request to bepro api and search for hotels by all parameters
+    :param radius: the radius of distance to search
     :param search_key: the city and country to search
     :param country_code: the country code
     :param geo_code: the geographic code for the city
@@ -32,7 +33,7 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
             "SearchResponceType": 7,
             "SearchType": 0,
             "GeoSearch": {
-                "Radius": definition.radius,
+                "Radius": radius,
                 "HavePIP": False,
                 "SearchKey": {
                     "Name": search_key
@@ -241,4 +242,4 @@ def insert_hotels_data_into_db():
     """
     hotels = jdr.get_clean_data(r'files')
     for hotel in hotels:
-        hotel_handler.handle_data_hotel(hotel)
+        return hotel_handler.handle_data_hotel(hotel)

@@ -1,4 +1,4 @@
-from dbConnections import basic_sql_queries as sql_queries
+from dbConnections import sql_queries as sql_queries
 from moduls.objects.hotel_data_obj import HotelData
 from moduls.objects.room_data_obj import RoomData
 
@@ -24,7 +24,7 @@ def handle_data_hotel(hotel):
         sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
 
     rooms = hotel.get("RoomClasses")
-    handle_room_data(hotel_id, rooms)
+    return handle_room_data(hotel_id, rooms)
 
 
 def handle_room_data(hotel_id, rooms):
@@ -34,6 +34,7 @@ def handle_room_data(hotel_id, rooms):
     :param rooms: the room data to be inserted
     :return: None
     """
+    rooms_ids = []
     for room in rooms:
         hotel_rooms = room.get('HotelRooms')[0]
         code = room.get('Board').get('Basis').get('Code')
@@ -49,7 +50,9 @@ def handle_room_data(hotel_id, rooms):
                              limit_date, code, desc)
         room_id = sql_queries.insert_room_data(room_data)
         if room_id is not None:
-            room_id = int(room_id[0])
+            room_id = int(room_id)
+            rooms_ids.append(room_id)
         if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
             if hotel_rooms.get('SysCode')[3] != 0:
                 pass
+    return rooms_ids

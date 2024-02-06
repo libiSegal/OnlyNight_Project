@@ -22,7 +22,6 @@ def get_json_file_names(files_folder_path):
     :return: list of filenames
     """
     name_list = [item for item in listdir(files_folder_path) if isfile(join(files_folder_path, item))]
-    print(name_list, files_folder_path)
     return name_list
 
 
@@ -79,7 +78,6 @@ def get_all_data(files_folder_name):
     """
     folder_name = 'files'
     files_names = get_json_file_names(files_folder_name)
-    print(files_names)
     hotel_data_list = []
     hotel_ids_list = []
     for name in files_names:

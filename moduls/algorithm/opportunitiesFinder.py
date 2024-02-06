@@ -1,6 +1,6 @@
 import itertools
 from moduls.algorithm import statisticall_information
-from dbConnections import basic_sql_queries
+from dbConnections import sql_queries
 from moduls.objects.opportunity_data_obj import OpportunityData
 
 
@@ -39,15 +39,15 @@ def insert_opportunities_to_database(opportunities_list):
     for op in opportunities_list:
         opportunity = OpportunityData(op[0], op[1], op[2], op[3], op[4], op[5],
                                       op[6], op[7], op[8], op[10], op[9], op[11], op[12])
-        basic_sql_queries.insert_opportunities(opportunity)
+        sql_queries.insert_opportunities(opportunity)
 
 
 def get_opportunities_from_db():
-    return basic_sql_queries.select_opportunities()
+    return sql_queries.select_opportunities()
 
 
 def get_opportunities_hotels(ids):
-    return basic_sql_queries.select_data_of_hotels_by_id(ids)
+    return sql_queries.select_data_of_hotels_by_id(ids)
 
 
 def grop_hotels_by_id(hotels_list):
@@ -67,10 +67,9 @@ def remove_duplicate_data(hotels_list):
                     hotel_without_duplicate.append(item)
         hotels_new_list.append(hotel_without_duplicate)
     return hotels_new_list
-import time
+
 
 # ids = search_opportunities("Berlin")
-# print("The opportunities ids len is - ", len(ids))
 # data = basic_sql_queries.select_data_of_opportunities(ids)
 # insert_opportunities_to_database(data)
 

@@ -11,7 +11,7 @@ conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};\
 cursor = conn.cursor()
 
 
-def exec_stored_procedure(name, values):
+def exec_stored_procedures(name, values):
     """
     Executes stored procedure in sql server
     :param name: the name of the procedure to be executing
@@ -21,13 +21,12 @@ def exec_stored_procedure(name, values):
     sql = f"EXEC {name} {values}"
     sql = sql.replace("(", "")
     sql = sql.replace(")", "")
-    print(sql)
     row_id = cursor.execute(sql).fetchall()[0]
     conn.commit()
     return row_id
 
 
-def exec_view(name):
+def exec_views(name):
     """
     Executes view in sql server
     :param name: the name of the view
@@ -38,16 +37,20 @@ def exec_view(name):
     return data
 
 
-def exec_function(function_name, *args):
-    val = args
-    print(val)
+def exec_functions(function_name, *args):
     sql = f"SELECT * FROM {function_name}{args}"
-    print(sql)
     data = cursor.execute(sql)
     return data
 
 
-def exec_query(ids):
+def exec_query_select_room_prices_by_ids(ids):
+    string_ids = str(ids).replace("[", "").replace("]", "")
+    sql = f"SELECT ID, Price, Check_in FROM rooms WHERE ID IN ({string_ids})"
+    data = cursor.execute(sql).fetchall()
+    return data
+
+
+def exec_query_select_rooms(ids):
     string_ids = str(ids).replace("[", "").replace("]", "")
     sql = f"""SELECT 
               rooms.ID, rooms.Hotel_id, rooms.Price, rooms.Description, 
@@ -61,7 +64,7 @@ def exec_query(ids):
     return data
 
 
-def exec_select_hotel_data_query(ids):
+def exec_query_select_hotel_data(ids):
     string_ids = str(ids).replace("[", "").replace("]", "")
     sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
                 addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
