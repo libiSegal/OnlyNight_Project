@@ -168,29 +168,32 @@ def decompress(compressed_file):
     :param compressed_file: the file to decompress
     :return: the decompressed file
     """
-    if compressed_file is None or len(compressed_file) == 0:
+    try:
+        if compressed_file is None or len(compressed_file) == 0:
+            return None
+        if "<?xml version" in compressed_file:
+            return compressed_file
+
+        g_zip_buffer = base64.urlsafe_b64decode(compressed_file)
+
+        with BytesIO() as memory_stream:
+            data_length = int.from_bytes(g_zip_buffer[:4], byteorder='little')
+            memory_stream.write(g_zip_buffer[4:])
+
+            buffer = bytearray(data_length)
+            memory_stream.seek(0)
+
+            with gzip.GzipFile(fileobj=memory_stream, mode='rb') as g_zip_stream:
+                total_read = 0
+                while total_read < data_length:
+                    bytes_read = g_zip_stream.readinto(buffer)
+                    if bytes_read == 0:
+                        break
+                    total_read += bytes_read
+
+                return buffer.decode('utf-8').rstrip('\x00')
+    except:
         return None
-    if "<?xml version" in compressed_file:
-        return compressed_file
-
-    g_zip_buffer = base64.urlsafe_b64decode(compressed_file)
-
-    with BytesIO() as memory_stream:
-        data_length = int.from_bytes(g_zip_buffer[:4], byteorder='little')
-        memory_stream.write(g_zip_buffer[4:])
-
-        buffer = bytearray(data_length)
-        memory_stream.seek(0)
-
-        with gzip.GzipFile(fileobj=memory_stream, mode='rb') as g_zip_stream:
-            total_read = 0
-            while total_read < data_length:
-                bytes_read = g_zip_stream.readinto(buffer)
-                if bytes_read == 0:
-                    break
-                total_read += bytes_read
-
-            return buffer.decode('utf-8').rstrip('\x00')
 
 
 def download_hotels_data(url_list):
@@ -241,5 +244,6 @@ def insert_hotels_data_into_db():
     :return: None
     """
     hotels = jdr.get_clean_data(r'files')
-    for hotel in hotels:
-        return hotel_handler.handle_data_hotel(hotel)
+    if hotels is not None:
+        for hotel in hotels:
+            return hotel_handler.handle_data_hotel(hotel)

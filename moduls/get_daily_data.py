@@ -1,12 +1,8 @@
-import asyncio
-import nest_asyncio
 import datetime
 import pandas as pd
 from datetime import date
 from dbConnections import sql_queries as sql_connection
 from moduls.beProApi import bepro_api
-
-nest_asyncio.apply()
 
 
 def dates_in_year():
@@ -24,12 +20,11 @@ def get_search_setting():
     return search_settings_list
 
 
-async def get_daily_data():
+def get_daily_data():
     dates = dates_in_year()
     search_settings = get_search_setting()
-    loop = asyncio.get_event_loop()
     for search_setting in search_settings:
-        loop.run_until_complete(async_loop(dates, search_setting))
+        async_loop(dates, search_setting)
 
 
 def async_loop(dates, search_setting):
@@ -44,4 +39,4 @@ def async_loop(dates, search_setting):
         print(end_time - start_time)
 
 
-asyncio.run(get_daily_data())
+get_daily_data()

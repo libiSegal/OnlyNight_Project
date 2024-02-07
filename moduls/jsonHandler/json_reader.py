@@ -95,8 +95,12 @@ def get_clean_data(folder_path):
     :param folder_path: the folder path of the json files
     :return: the data without duplicates
     """
-    hotels_date, hotel_ids_list = get_all_data(folder_path)
-    return remove_duplicates_hotels(hotels_date, hotel_ids_list)
+    try:
+        hotels_date, hotel_ids_list = get_all_data(folder_path)
+        return remove_duplicates_hotels(hotels_date, hotel_ids_list)
+    except Exception:
+        return None
+
 
 
 def delete_jsons_files(folder_path):

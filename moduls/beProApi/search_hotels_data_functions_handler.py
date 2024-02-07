@@ -33,9 +33,8 @@ def get_country_name(search_key):
     search_key = search_key.replace(" ", "")
     country_name = search_key.split(',')
     if len(country_name) == 2:
-        if check_is_country(country_name[1]):
-            return country_name[1]
-    elif check_is_country(country_name[0]):
+        return country_name[1]
+    else:
         return country_name[0]
 
 
