@@ -92,8 +92,7 @@ async def get_prices(hotel_id, room_id):
 @hotels_names_router.get('/')
 async def get_hotels_names():
     hotels = sql_queries.select_hotels_name()
-    print(list(hotels))
-    return list(hotels)
+    return set(hotels)
 
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities')
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities/opportunities')
