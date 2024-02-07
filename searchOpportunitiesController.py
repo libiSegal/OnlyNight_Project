@@ -12,6 +12,7 @@ app = FastAPI()
 
 search_opportunities_router = APIRouter()
 search_one_hotel_opportunities_router = APIRouter()
+hotels_names_router = APIRouter()
 bookings_router = APIRouter()
 prices_router = APIRouter()
 
@@ -88,10 +89,17 @@ async def get_prices(hotel_id, room_id):
         return HTTPException(status_code=500)
 
 
+@hotels_names_router.get('/')
+async def get_hotels_names():
+    hotels = sql_queries.select_hotels_name()
+    print(list(hotels))
+    return list(hotels)
+
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities')
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities/opportunities')
 app.include_router(search_one_hotel_opportunities_router, prefix='/api/search_opportunities/one_hotel')
 app.include_router(prices_router, prefix='/api/search_opportunities/prices')
 app.include_router(bookings_router, prefix='/api/search_opportunities/bookings')
+app.include_router(hotels_names_router, prefix='/api/search_opportunities/hotels_names')
 
 uvicorn.run(app, host='127.0.0.1', port=8000, access_log=False)

@@ -6,13 +6,12 @@ def get_statistically_information_for_segment(segment, month, year):
     statistically_information_table = sql_queries.select_statistically_information_by_month(month)
     statistically_information_table_for_segment = []
     for row in statistically_information_table:
-        if row[4] == segment: # and row[3] == year
+        if row[4] == segment.get("Name") and row[3] == year:
             statistically_information_table_for_segment.append([row[0], row[1], row[2], row[3], row[4], row[5]])
     return statistically_information_table_for_segment
 
 
 def get_adr_for_month(statistically_information):
-    print(statistically_information)
     return statistically_information[0][0]
 
 
@@ -24,8 +23,8 @@ def get_occupancy_for_month(statistically_information):
     return statistically_information[0][2]
 
 
-def get_rooms():
-    return sql_queries.selectRoomsPrices()
+def get_rooms(segment_id):
+    return sql_queries.select_room_prices_by_segment_id(segment_id)
 
 
 def short_rooms_by_month(rooms):

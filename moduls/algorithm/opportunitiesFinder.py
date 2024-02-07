@@ -6,11 +6,11 @@ from moduls.objects.opportunity_data_obj import OpportunityData
 
 def search_opportunities(segment):
     opportunities = []
-    arbitrage = 150
-    rooms = statisticall_information.get_rooms()
+    arbitrage = 50
+    rooms = statisticall_information.get_rooms(segment.get("Id"))
     shorted_rooms_by_month = statisticall_information.short_rooms_by_month(rooms)
     for i in range(1, 13):
-        history_data = statisticall_information.get_statistically_information_for_segment(segment, i, "2023")
+        history_data = statisticall_information.get_statistically_information_for_segment(segment, 12, 2023)
         if len(history_data) != 0:
             history_price = statisticall_information.get_adr_for_month(history_data)
             for room in shorted_rooms_by_month[i - 1]:

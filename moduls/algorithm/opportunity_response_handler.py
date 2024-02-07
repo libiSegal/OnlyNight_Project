@@ -8,36 +8,39 @@ def get_opportunities_response():
     segments = get_segments()
     for segment in segments:
         opportunities_ids = opportunitiesFinder.search_opportunities(segment)
-        opportunities = sql_queries.select_data_of_opportunities(opportunities_ids)
-        hotels_ids = opportunitiesFinder.grop_opportunities_hotels(opportunities)
-        hotels = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
-        grop_hotels = opportunitiesFinder.grop_hotels_by_id(hotels)
-        hotel_without_duplicates = opportunitiesFinder.remove_duplicate_data(grop_hotels)
-        opportunities_list = extract_opportunities_from_db_type(opportunities)
-        hotels_rooms = opportunitiesFinder.match_room_hotel(hotel_without_duplicates, opportunities_list)
-        for item in hotels_rooms.items():
-            data = item[1]  # item[0] = hotel id item[1] = hotel data
-            item_data_end = data.index("1") + 1
-            res_item = create_item(*data[0:item_data_end])
-            num += 1
-            rooms_indexes = [index for index, item in enumerate(data) if isinstance(item, list)]
-            rooms_indexes_start = rooms_indexes[0]
-            images = data[item_data_end:rooms_indexes_start]
-            res_images = handle_hotel_images(images)
-            res_item = add_images(res_item, res_images)
-            res_rooms_list = []
-            for index in rooms_indexes:
-                data[index].pop(1)  # delete the hotel id
-                room = create_room(*data[index])
-                res_rooms_list.append(room)
-            hotel = create_hotel(res_item, res_rooms_list)
-            res_hotels.append(hotel)
-    return ResponseOpportunity(res_hotels).body
+        if len(opportunities_ids) > 0:
+            opportunities = sql_queries.select_data_of_opportunities(opportunities_ids)
+            print(len(opportunities))
+            hotels_ids = opportunitiesFinder.grop_opportunities_hotels(opportunities)
+            hotels = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
+            grop_hotels = opportunitiesFinder.grop_hotels_by_id(hotels)
+            hotel_without_duplicates = opportunitiesFinder.remove_duplicate_data(grop_hotels)
+            opportunities_list = extract_opportunities_from_db_type(opportunities)
+            hotels_rooms = opportunitiesFinder.match_room_hotel(hotel_without_duplicates, opportunities_list)
+            for item in hotels_rooms.items():
+                data = item[1]  # item[0] = hotel id item[1] = hotel data
+                item_data_end = data.index("1") + 1
+                res_item = create_item(*data[0:item_data_end])
+                rooms_indexes = [index for index, item in enumerate(data) if isinstance(item, list)]
+                rooms_indexes_start = rooms_indexes[0]
+                images = data[item_data_end:rooms_indexes_start]
+                res_images = handle_hotel_images(images)
+                res_item = add_images(res_item, res_images)
+                res_rooms_list = []
+                for index in rooms_indexes:
+                    data[index].pop(1)  # delete the hotel id
+                    room = create_room(*data[index])
+                    res_rooms_list.append(room)
+                hotel = create_hotel(res_item, res_rooms_list)
+                res_hotels.append(hotel)
+    hotels = ResponseOpportunity(res_hotels).body
+    print(hotels)
+    return hotels
 
 
 def get_segments():
     segments_data = sql_queries.select_search_setting()
-    return [seg[0] for seg in segments_data]
+    return [{"Id": seg[0], "Name": seg[1].split(",")[0]} for seg in segments_data]
 
 
 def extract_opportunities_from_db_type(opportunities):

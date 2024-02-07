@@ -11,13 +11,15 @@ def inset_hotel_data(hotel_data):
     address_values = (hotel_data.hotel_address, hotel_data.hotel_phone,
                       hotel_data.hotel_fax, hotel_data.hotel_city, hotel_data.hotel_country)
     address_id = connection.exec_stored_procedures(insert_address, address_values)[0]
-    address_id = int(address_id)
+    address_id = int(address_id[0])
     insert_position = "dbo.insertPosition"
     position_values = (hotel_data.hotel_latitude, hotel_data.hotel_longitude, hotel_data.hotel_pip)
     position_id = connection.exec_stored_procedures(insert_position, position_values)[0]
-    position_id = int(position_id)
+    position_id = int(position_id[0])
     insert_hotel = "dbo.insertHotel"
-    hotel_values = (hotel_data.hotel_name, hotel_data.hotel_code, hotel_data.hotel_stars, address_id, position_id)
+    hotel_values = (
+        hotel_data.search_id, hotel_data.hotel_name, hotel_data.hotel_code, hotel_data.hotel_stars, address_id,
+        position_id)
     hotel_id = connection.exec_stored_procedures(insert_hotel, hotel_values)
     return hotel_id
 
@@ -45,7 +47,7 @@ def insert_room_data(room_data):
     room_values = (room_data.hotel_id, room_data.price, room_data.desc, room_data.sysCode, room_data.check_in,
                    room_data.check_out, room_data.nights, room_data.b_token, room_data.limit_date, room_data.remarks)
     room_id = connection.exec_stored_procedures(insert_room, room_values)[0]
-    room_id = int(room_id)
+    room_id = int(room_id[0])
     insert_mata_data = "dbo.insertMetadata"
     mata_values = (room_id, room_data.code, room_data.code_description)
     connection.exec_stored_procedures(insert_mata_data, mata_values)
@@ -90,6 +92,14 @@ def insert_opportunities(opportunity_data):
     connection.exec_stored_procedures(procedure_name, oppo_values)
 
 
+def select_hotels_name():
+    view_name = 'dbo.selectHotelsNames'
+    names = []
+    for row in connection.exec_views(view_name):
+        names.append(row[0])
+    return names
+
+
 def select_search_setting():
     """
     select search settings from the database
@@ -97,6 +107,11 @@ def select_search_setting():
     """
     search_settings_view = "dbo.selectSearchSettings"
     return connection.exec_views(search_settings_view)
+
+
+def select_room_prices_by_segment_id(seg_id):
+    procedure_name = 'dbo.selectRoomsPricesById'
+    return connection.exec_stored_procedures(procedure_name, seg_id)
 
 
 def select_data_of_opportunities(ids):
@@ -133,8 +148,9 @@ def select_data_of_hotels_by_id(ids):
     :return:the hotels data
     """
     res = connection.exec_query_select_hotel_data(ids)
-    hotels = [row for row in res]
-    return hotels
+    if res:
+        hotels = [row for row in res]
+        return hotels
 
 
 def select_number_of_rooms():

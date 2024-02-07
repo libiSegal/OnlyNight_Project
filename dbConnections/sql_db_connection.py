@@ -21,7 +21,9 @@ def exec_stored_procedures(name, values):
     sql = f"EXEC {name} {values}"
     sql = sql.replace("(", "")
     sql = sql.replace(")", "")
-    row_id = cursor.execute(sql).fetchall()[0]
+    row_id = cursor.execute(sql).fetchall()
+    if len(row_id) > 0:
+        row_id = row_id
     conn.commit()
     return row_id
 
@@ -65,16 +67,17 @@ def exec_query_select_rooms(ids):
 
 
 def exec_query_select_hotel_data(ids):
-    string_ids = str(ids).replace("[", "").replace("]", "")
-    sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
-                addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
-                positions.Latitude, positions.Longitude, positions.Pip,
-				images.Description, images.Img
-                FROM hotels 
-                JOIN addressesInfo ON addressesInfo.ID = Address_id 
-                JOIN positions ON positions.ID = Position_id
-				JOIN images ON images.Hotel_id = hotels.ID
-                WHERE hotels.ID IN ( {string_ids} )"""
-    print(sql)
-    data = cursor.execute(sql).fetchall()
-    return data
+    if len(ids) > 0:
+        string_ids = str(ids).replace("[", "").replace("]", "")
+        sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
+                    addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
+                    positions.Latitude, positions.Longitude, positions.Pip,
+                    images.Description, images.Img
+                    FROM hotels 
+                    JOIN addressesInfo ON addressesInfo.ID = Address_id 
+                    JOIN positions ON positions.ID = Position_id
+                    JOIN images ON images.Hotel_id = hotels.ID
+                    WHERE hotels.ID IN ( {string_ids} )"""
+        print(sql)
+        data = cursor.execute(sql).fetchall()
+        return data

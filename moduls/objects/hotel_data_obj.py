@@ -1,4 +1,5 @@
 class HotelData:
+    search_id: int
     hotel_name: str
     hotel_code: str
     hotel_stars: float
@@ -11,7 +12,8 @@ class HotelData:
     hotel_longitude: str
     hotel_pip: str
 
-    def __init__(self, name, code, stars, address, phone, fax, city, country, latitude, longitude, pip):
+    def __init__(self, search_id, name, code, stars, address, phone, fax, city, country, latitude, longitude, pip):
+        self.search_id = search_id
         self.hotel_name = name
         self.hotel_code = code
         self.hotel_stars = stars

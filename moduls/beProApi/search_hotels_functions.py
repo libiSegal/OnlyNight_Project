@@ -238,7 +238,7 @@ def get_name_from_url(url):
     return name
 
 
-def insert_hotels_data_into_db():
+def insert_hotels_data_into_db(search_id):
     """
     the function take the hotels from the files directory and insert them into the database
     :return: None
@@ -246,4 +246,4 @@ def insert_hotels_data_into_db():
     hotels = jdr.get_clean_data(r'files')
     if hotels is not None:
         for hotel in hotels:
-            return hotel_handler.handle_data_hotel(hotel)
+            return hotel_handler.handle_data_hotel(search_id, hotel)

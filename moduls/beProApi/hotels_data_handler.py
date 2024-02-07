@@ -3,7 +3,7 @@ from moduls.objects.hotel_data_obj import HotelData
 from moduls.objects.room_data_obj import RoomData
 
 
-def handle_data_hotel(hotel):
+def handle_data_hotel(search_id, hotel):
     """
     Make ready the date from beProApi to insert into the db
     :param hotel: the data to be inserted
@@ -13,13 +13,13 @@ def handle_data_hotel(hotel):
     address_info = hotel.get('AddressInfo')
     position = hotel.get('Position')
     images = hotel.get('Images')
-    hotel_data = HotelData(item.get('UniqueName'), item.get('Code'), item.get('Star'), address_info.get('Address'),
+    hotel_data = HotelData(search_id, item.get('UniqueName'), item.get('Code'), item.get('Star'), address_info.get('Address'),
                            address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
                            address_info.get('Country'), position.get('Latitude'),
                            position.get('Longitude'), position.get('PIP'))
 
     hotel_id = sql_queries.inset_hotel_data(hotel_data)[0]
-    hotel_id = int(hotel_id)
+    hotel_id = int(hotel_id[0])
     for img in images:
         sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
 

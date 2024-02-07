@@ -6,7 +6,7 @@ from moduls.objects.response_opportunity_obj import ResponseOpportunityItem, Res
     ResponseOpportunityHotel, ResponseOpportunity
 
 
-def search_one_hotel(hotel_name, stars, check_in, check_out, radius):
+def search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius):
     """
     Call the bePro_api to search the hotel
     :param hotel_name: the name of the hotel to search
@@ -18,7 +18,7 @@ def search_one_hotel(hotel_name, stars, check_in, check_out, radius):
     """
     check_in = datetime.strptime(check_in, "%Y-%m-%d")
     check_out = datetime.strptime(check_out, "%Y-%m-%d")
-    room_ids = bepro_api.search_hotels("hotel", hotel_name, stars, check_in, check_out, radius)
+    room_ids = bepro_api.search_hotels("hotel", search_id, hotel_name, stars, check_in, check_out, radius)
     if room_ids:
         return room_ids
     else:
@@ -175,10 +175,17 @@ def check_if_segment(city):
     """
     search_settings = sql_queries.select_search_setting()
     for search_setting in search_settings:
-        if city in search_setting[0]:
+        if city in search_setting[1]:
             return True
         else:
             return False
+
+
+def get_search_settings_id(city):
+    search_settings = sql_queries.select_search_setting()
+    for search_setting in search_settings:
+        if city in search_setting[1]:
+            return search_setting[0]
 
 
 def check_correctness_of_the_hotel_name(hotel_name, hotel_name_to_check):
@@ -206,10 +213,11 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
     """
     if not check_if_segment(segment):
         return Exception("This city is not under surveillance")
+    search_id = get_search_settings_id(segment)
     if hotel_name == "":
-        rooms_ids = search_one_hotel(segment, stars, check_in, check_out, radius)
+        rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius)
     else:
-        rooms_ids = search_one_hotel(hotel_name, stars, check_in, check_out, radius=1)
+        rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
     if rooms_ids:
         rooms_ids = list(set(rooms_ids))
         prices = get_rooms_prices_from_db(rooms_ids)

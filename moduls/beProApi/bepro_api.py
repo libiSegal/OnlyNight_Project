@@ -8,7 +8,7 @@ from moduls.beProApi import search_hotels_data_functions_handler as search_hotel
 URL = 'https://pub_srv.beprotravel.net/BePro'
 
 
-def search_hotels(search_type, search_key, stars, check_in, check_out, radius=5):
+def search_hotels(search_type, search_id, search_key, stars, check_in, check_out, radius=5):
     """
     this function is used to search hotels by bePro api and inserted the response into the database
     :param search_type: show if search one hotel ro more
@@ -35,7 +35,7 @@ def search_hotels(search_type, search_key, stars, check_in, check_out, radius=5)
                                                     radius)
         urls_hotels = search_htl.get_the_hotels_details(unique_key)
         search_htl.download_hotels_data(urls_hotels)
-        rooms_ids = search_htl.insert_hotels_data_into_db()
+        rooms_ids = search_htl.insert_hotels_data_into_db(search_id)
         jdr.delete_jsons_files('files')
         return rooms_ids
     except Exception as e:
