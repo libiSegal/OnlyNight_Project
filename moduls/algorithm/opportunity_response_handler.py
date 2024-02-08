@@ -10,11 +10,10 @@ def get_opportunities_response():
         opportunities_ids = opportunitiesFinder.search_opportunities(segment)
         if len(opportunities_ids) > 0:
             opportunities = sql_queries.select_data_of_opportunities(opportunities_ids)
-            print(len(opportunities))
             hotels_ids = opportunitiesFinder.grop_opportunities_hotels(opportunities)
             hotels = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
-            grop_hotels = opportunitiesFinder.grop_hotels_by_id(hotels)
-            hotel_without_duplicates = opportunitiesFinder.remove_duplicate_data(grop_hotels)
+            group_hotels = opportunitiesFinder.grop_hotels_by_id(hotels)
+            hotel_without_duplicates = opportunitiesFinder.remove_duplicate_data(group_hotels)
             opportunities_list = extract_opportunities_from_db_type(opportunities)
             hotels_rooms = opportunitiesFinder.match_room_hotel(hotel_without_duplicates, opportunities_list)
             for item in hotels_rooms.items():
@@ -32,9 +31,9 @@ def get_opportunities_response():
                     room = create_room(*data[index])
                     res_rooms_list.append(room)
                 hotel = create_hotel(res_item, res_rooms_list)
-                res_hotels =  check_hotel_is_exists(hotel, res_hotels)
+                res_hotels = check_hotel_is_exists(hotel, res_hotels)
+
     hotels = ResponseOpportunity(res_hotels).body
-    print(hotels)
     return hotels
 
 
@@ -138,11 +137,26 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
 
 def check_hotel_is_exists(hotel_to_check, hotel_list):
     print(hotel_to_check, "!!!!!!!", hotel_list)
+    if len(hotel_list) == 0:
+        hotel_list.append(hotel_to_check)
     for hotel in hotel_list:
+        print("in for")
         if hotel.get("Item").get("Name") == hotel_to_check.get("Item").get("Name") and hotel.get("Item").get(
                 "Code") == hotel_to_check.get("Item").get("Code"):
-            for room in hotel_to_check.get("Rooms"):
-                hotel.get("Rooms").append(room)
+            print("in if")
+            rooms = hotel_to_check.get("Rooms")
+            for i in range(len(rooms)):
+                if not check_room_in_hotel(rooms[i], hotel.get("Rooms")):
+                    hotel.get("Rooms").append(rooms[i])
         else:
             hotel_list.append(hotel_to_check)
+    print(type(hotel_list))
     return hotel_list
+
+
+def check_room_in_hotel(room_to_check, rooms):
+    check = False
+    for room in rooms:
+        if room.get("RoomId") == room_to_check.get("RoomId"):
+            check = True
+    return check
