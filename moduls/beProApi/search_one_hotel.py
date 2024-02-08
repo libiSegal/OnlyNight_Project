@@ -175,10 +175,10 @@ def check_if_segment(city):
     """
     search_settings = sql_queries.select_search_setting()
     for search_setting in search_settings:
+        print(search_setting)
         if city in search_setting[1]:
             return True
-        else:
-            return False
+    return False
 
 
 def get_search_settings_id(city):
@@ -211,13 +211,16 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
     :param arbitrage: the profit of the hotel to search
     :return: all opportunities
     """
+    print(hotel_name, stars, check_in, check_out)
     if not check_if_segment(segment):
-        return Exception("This city is not under surveillance")
+        print("The segment")
+        return "This city is not under surveillance"
     search_id = get_search_settings_id(segment)
     if hotel_name == "":
         rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius)
     else:
         rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
+        print("room ids", rooms_ids)
     if rooms_ids:
         rooms_ids = list(set(rooms_ids))
         prices = get_rooms_prices_from_db(rooms_ids)

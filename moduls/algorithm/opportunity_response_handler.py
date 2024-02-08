@@ -32,7 +32,7 @@ def get_opportunities_response():
                     room = create_room(*data[index])
                     res_rooms_list.append(room)
                 hotel = create_hotel(res_item, res_rooms_list)
-                res_hotels.append(hotel)
+                res_hotels =  check_hotel_is_exists(hotel, res_hotels)
     hotels = ResponseOpportunity(res_hotels).body
     print(hotels)
     return hotels
@@ -134,3 +134,15 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
     body["MetaData"]["Code"] = meal_plan_code
     body["MetaData"]["Desc"] = meal_plan_desc
     return body
+
+
+def check_hotel_is_exists(hotel_to_check, hotel_list):
+    print(hotel_to_check, "!!!!!!!", hotel_list)
+    for hotel in hotel_list:
+        if hotel.get("Item").get("Name") == hotel_to_check.get("Item").get("Name") and hotel.get("Item").get(
+                "Code") == hotel_to_check.get("Item").get("Code"):
+            for room in hotel_to_check.get("Rooms"):
+                hotel.get("Rooms").append(room)
+        else:
+            hotel_list.append(hotel_to_check)
+    return hotel_list
