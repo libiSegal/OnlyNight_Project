@@ -30,23 +30,12 @@ def get_country_name(search_key):
     :param search_key: a str of city and country names
     :return: only the country name
     """
-    search_key = search_key.replace(" ", "")
+    # search_key = search_key.replace(" ", "")
     country_name = search_key.split(',')
     if len(country_name) == 2:
         return country_name[1]
     else:
         return country_name[0]
-
-
-def check_is_country(country_name):
-    """
-    Check if a country is really a valid country
-    :param country_name: a str of country name
-    :return: true if the country is really a valid and false otherwise
-    """
-    if any(country.name.lower() == country_name.lower() for country in pycountry.countries):
-        return True
-    raise ValueError('Invalid country')
 
 
 def convert_country_name_to_code(country_name):
@@ -55,10 +44,13 @@ def convert_country_name_to_code(country_name):
     :param country_name: the country name to convert
     :return: the country code
     """
+    country_name = country_name[1:]
+    print(country_name)
     for country in pycountry.countries:
-        if (country.name.lower() == country_name.lower() or
-                country.official_name.lower() == country_name.lower()):
+        print(country_name)
+        if country.name.lower() == country_name.lower():
             return country.alpha_2
+
 
 
 def build_room(num_adults, num_children, cnn_ages=None):
