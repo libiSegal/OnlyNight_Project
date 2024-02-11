@@ -6,7 +6,9 @@ def get_statistically_information_for_segment(segment, month, year):
     statistically_information_table = sql_queries.select_statistically_information_by_month(month)
     statistically_information_table_for_segment = []
     for row in statistically_information_table:
+        print(row, " &", segment)
         if row[4] == segment.get("Name") and row[3] == year:
+            print("in if")
             statistically_information_table_for_segment.append([row[0], row[1], row[2], row[3], row[4], row[5]])
     return statistically_information_table_for_segment
 

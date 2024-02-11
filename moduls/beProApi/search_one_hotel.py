@@ -46,9 +46,11 @@ def calculate_opportunities(room_prices, segment, last_year, arbitrage=50):
     opportunities = []
     month = get_the_check_in_month(room_prices[0])
     history_data = statisticall_information.get_statistically_information_for_segment(segment, month, last_year)
+    print("history data", history_data)
     if len(history_data) != 0:
         history_price = statisticall_information.get_adr_for_month(history_data)
         for room in room_prices:
+            print("price", room[1], "history_price", history_price)
             if room[1] + arbitrage <= history_price:
                 opportunities.append(room[0])
     return opportunities
@@ -219,12 +221,14 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
     if hotel_name == "":
         rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius)
     else:
+        hotel_name = hotel_name + " " + segment
         rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
         print("room ids", rooms_ids)
     if rooms_ids:
         rooms_ids = list(set(rooms_ids))
         prices = get_rooms_prices_from_db(rooms_ids)
         last_year = get_last_year()
+        segment = {"Name": segment}
         oppo = calculate_opportunities(prices, segment, last_year, arbitrage)
         if len(oppo) > 0:
             oppo_data = get_rooms_data_from_db(oppo)

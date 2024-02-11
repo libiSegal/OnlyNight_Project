@@ -19,6 +19,8 @@ def search_hotels(search_type, search_id, search_key, stars, check_in, check_out
     :param check_out: the date of the checkOut
     :return:None
     """
+    print("search type:", search_type, "search_id:", search_id, "search_key:", search_key,
+          "stars:", stars, "check_in:", check_in, "check_out:", check_out, "radius:", radius)
     try:
         country_code = ""
         if search_type == 'hotels':
@@ -28,6 +30,7 @@ def search_hotels(search_type, search_id, search_key, stars, check_in, check_out
 
             country_code = ""
         geo_code = google_maps_api.get_geo_code(search_key)
+        print("geo_code:", geo_code)
         nights = search_hotels_data.calculate_number_of_nights(check_in, check_out)
         rooms = search_hotels_data.build_room(defn.numbers_adults, defn.numbers_children, defn.cnn_age)
         check_in = str(check_in)
