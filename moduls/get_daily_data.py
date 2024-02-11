@@ -1,6 +1,11 @@
 import datetime
+import time
+
 import pandas as pd
 from datetime import date
+
+import schedule
+
 from dbConnections import sql_queries as sql_connection
 from moduls.beProApi import bepro_api
 
@@ -39,4 +44,7 @@ def async_loop(dates, search_setting):
         print(end_time - start_time)
 
 
-get_daily_data()
+schedule.every().day.at('00.00').do(get_daily_data())
+while True:
+    schedule.run_pending()
+    time.sleep(1)
