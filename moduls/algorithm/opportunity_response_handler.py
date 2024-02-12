@@ -172,3 +172,7 @@ def remove_duplicate_rooms(room_list):
         else:
             room_list.remove(room)
     return room_list
+
+
+def calculate_profit(room):
+    pass

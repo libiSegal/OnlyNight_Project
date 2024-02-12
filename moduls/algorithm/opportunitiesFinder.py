@@ -10,11 +10,13 @@ def search_opportunities(segment):
     rooms = statisticall_information.get_rooms(segment.get("Id"))
     shorted_rooms_by_month = statisticall_information.short_rooms_by_month(rooms)
     for i in range(1, 13):
-        history_data = statisticall_information.get_statistically_information_for_segment(segment, 12, 2023)
+        history_data = statisticall_information.get_statistically_information_for_segment(segment, i, 2023)
         if len(history_data) != 0:
             history_price = statisticall_information.get_adr_for_month(history_data)
             for room in shorted_rooms_by_month[i - 1]:
+                print("room", shorted_rooms_by_month[i - 1][0])
                 if room[1] + arbitrage < history_price:
+                    print("price", room, " !! ", history_data)
                     opportunities.append(room[0])
     return opportunities
 
@@ -68,8 +70,6 @@ def remove_duplicate_data(hotels_list):
         hotels_new_list.append(hotel_without_duplicate)
     return hotels_new_list
 
-
 # ids = search_opportunities("Berlin")
 # data = basic_sql_queries.select_data_of_opportunities(ids)
 # insert_opportunities_to_database(data)
-
