@@ -6,7 +6,7 @@ from moduls.objects.opportunity_data_obj import OpportunityData
 
 def search_opportunities(segment):
     opportunities = []
-    arbitrage = 45
+    arbitrage = 50
     rooms = statisticall_information.get_rooms(segment.get("Id"))
     shorted_rooms_by_month = statisticall_information.short_rooms_by_month(rooms)
     for i in range(1, 13):

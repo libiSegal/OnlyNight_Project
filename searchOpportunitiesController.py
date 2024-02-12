@@ -1,3 +1,5 @@
+import json
+
 import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
@@ -76,9 +78,10 @@ async def charge_condition(room_token, price):
 @search_opportunities_router.get('/')
 async def get_opportunities():
     try:
-        return opportunity_response_handler.get_opportunities_response()
+        hotels = opportunity_response_handler.get_opportunities_response()
+        return hotels
     except HTTPException:
-        return HTTPException(status_code=500)
+        return HTTPException(status_code=500, detail="Sorry, an error occurred")
 
 
 @prices_router.get('/')
@@ -93,6 +96,7 @@ async def get_prices(hotel_id, room_id):
 async def get_hotels_names():
     hotels = sql_queries.select_hotels_name()
     return set(hotels)
+
 
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities')
 app.include_router(search_opportunities_router, prefix='/api/search_opportunities/opportunities')

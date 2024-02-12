@@ -21,4 +21,4 @@ def get_geo_code(place):
         return None
 
 
-print(get_geo_code("DE NELL Paris"))
+

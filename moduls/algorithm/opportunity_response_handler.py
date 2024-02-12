@@ -10,6 +10,7 @@ def get_opportunities_response():
         opportunities_ids = opportunitiesFinder.search_opportunities(segment)
         if len(opportunities_ids) > 0:
             opportunities = sql_queries.select_data_of_opportunities(opportunities_ids)
+            print("opportunities", len(opportunities))
             hotels_ids = opportunitiesFinder.grop_opportunities_hotels(opportunities)
             hotels = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
             group_hotels = opportunitiesFinder.grop_hotels_by_id(hotels)
@@ -32,7 +33,6 @@ def get_opportunities_response():
                     res_rooms_list.append(room)
                 hotel = create_hotel(res_item, res_rooms_list)
                 res_hotels = check_hotel_is_exists(hotel, res_hotels)
-
     hotels = ResponseOpportunity(res_hotels).body
     return hotels
 
@@ -79,14 +79,14 @@ def create_item(*args):
     body["AddressInfo"]["City"] = args[5]
     body["AddressInfo"]["Country"] = args[6]
     if len(args) == 10:
-        body["AddressInfo"]["Phone"] = type[str]
-        body["AddressInfo"]["Fax"] = type[str]
+        body["AddressInfo"]["Phone"] = " "
+        body["AddressInfo"]["Fax"] = " "
         body["Position"]["Latitude"] = args[7]
         body["Position"]["Longitude"] = args[8]
         body["Position"]["PIP"] = args[9]
     elif len(args) == 11:
         body["AddressInfo"]["Phone"] = args[7]
-        body["AddressInfo"]["Fax"] = type[str]
+        body["AddressInfo"]["Fax"] = " "
         body["Position"]["Latitude"] = args[8]
         body["Position"]["Longitude"] = args[9]
         body["Position"]["PIP"] = args[10]
@@ -136,14 +136,11 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
 
 
 def check_hotel_is_exists(hotel_to_check, hotel_list):
-    print(hotel_to_check, "!!!!!!!", hotel_list)
     if len(hotel_list) == 0:
         hotel_list.append(hotel_to_check)
     for hotel in hotel_list:
-        print("in for")
         if hotel.get("Item").get("Name") == hotel_to_check.get("Item").get("Name") and hotel.get("Item").get(
                 "Code") == hotel_to_check.get("Item").get("Code"):
-            print("in if")
             rooms = hotel_to_check.get("Rooms")
             for i in range(len(rooms)):
                 if not check_room_in_hotel(rooms[i], hotel.get("Rooms")):

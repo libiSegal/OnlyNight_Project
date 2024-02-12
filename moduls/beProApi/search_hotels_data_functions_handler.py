@@ -44,10 +44,9 @@ def convert_country_name_to_code(country_name):
     :param country_name: the country name to convert
     :return: the country code
     """
-    country_name = country_name[1:]
-    print(country_name)
+    if country_name[0] == " ":
+        country_name = country_name[1:]
     for country in pycountry.countries:
-        print(country_name)
         if country.name.lower() == country_name.lower():
             return country.alpha_2
 

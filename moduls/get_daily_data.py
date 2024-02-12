@@ -27,7 +27,7 @@ def get_search_setting():
 def get_daily_data():
     dates = dates_in_year()
     search_settings = get_search_setting()
-    for search_setting in search_settings[2:]:
+    for search_setting in search_settings:
         async_loop(dates, search_setting)
 
 
@@ -44,7 +44,9 @@ def async_loop(dates, search_setting):
         print(end_time - start_time)
 
 
-schedule.every().day.at('00.00').do(get_daily_data())
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# schedule.every().day.at('00:00').do(get_daily_data())
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
+
+get_daily_data()

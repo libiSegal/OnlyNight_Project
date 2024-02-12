@@ -243,6 +243,7 @@ def insert_hotels_data_into_db(search_id):
     the function take the hotels from the files directory and insert them into the database
     :return: None
     """
+    print("search_id", search_id)
     hotels = jdr.get_clean_data(r'files')
     if hotels is not None:
         for hotel in hotels:
