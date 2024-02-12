@@ -1,3 +1,5 @@
+from datetime import datetime
+from moduls.algorithm import statisticall_information as inflation
 from moduls.algorithm import opportunitiesFinder
 from dbConnections import sql_queries
 from moduls.objects.response_opportunity_obj import ResponseOpportunity
@@ -30,6 +32,7 @@ def get_opportunities_response():
                 for index in rooms_indexes:
                     data[index].pop(1)  # delete the hotel id
                     room = create_room(*data[index])
+                    room = calculate_profit(segment, room)
                     res_rooms_list.append(room)
                 unique_rooms = remove_duplicate_rooms(res_rooms_list)
                 hotel = create_hotel(res_item, unique_rooms)
@@ -114,6 +117,7 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
                 limit_date, remarks, meal_plan_code, meal_plan_desc, ):
     """
     Create a new room object
+    :param profit: the expected profit of the room
     :param room_id:the id of the room
     :param price: the price of the room
     :param desc: the description of the room
@@ -128,7 +132,7 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
     :param meal_plan_desc: the meal-plan description of the room
     :return: a room object
     """
-    body = {"RoomId": room_id, "Desc": desc, "Price": price, "SysCode": sys_code, "NumAdt": 2, "NumCnn": 0,
+    body = {"RoomId": room_id, "Desc": desc, "Price": price, "Profit": 0, "SysCode": sys_code, "NumAdt": 2, "NumCnn": 0,
             "CnnAge": [], "CheckIn": check_in, "CheckOut": check_out, "Nights": nights, "BToken": token,
             "LimitDate": limit_date, "Remarks": remarks, "MetaData": {}}
     body["MetaData"]["Code"] = meal_plan_code
@@ -174,5 +178,10 @@ def remove_duplicate_rooms(room_list):
     return room_list
 
 
-def calculate_profit(room):
-    pass
+def calculate_profit(segment, room):
+    check_in = room.get("CheckIn")
+    date = datetime.strptime(check_in, "%Y-%m-%d %H:%M:%S")
+    data_for_month = inflation.get_statistically_information_for_segment(segment, date.month, date.year - 1)
+    adr = inflation.get_adr_for_month(data_for_month)
+    room["Profit"] = adr - room.get("Price")
+    return room

@@ -3,7 +3,6 @@ from datetime import datetime
 
 
 def get_statistically_information_for_segment(segment, month, year):
-    print("get_statistically_information_for_segment called", month)
     statistically_information_table = sql_queries.select_statistically_information_by_month(month)
     statistically_information_table_for_segment = []
     for row in statistically_information_table:
@@ -35,6 +34,4 @@ def short_rooms_by_month(rooms):
         date = datetime.strptime(check_in, "%Y-%m-%d %H:%M:%S")
         month_index = date.month - 1  # Adjust month index to start from 0
         months[month_index].append(room)
-    print("february", months[1])
-    print("december", months[11])
     return months

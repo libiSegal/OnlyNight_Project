@@ -195,7 +195,6 @@ def select_statistically_information_by_month(month_number):
     :return: the  information by month
     """
     view_name = ""
-    print("Select statistically information by month", month_number)
     match month_number:
         case 1:
             view_name = "dbo.selectJanuaryData"
@@ -223,5 +222,4 @@ def select_statistically_information_by_month(month_number):
             view_name = "dbo.selectDecemberData"
         case _:
             return ValueError("Month number is not in the range")
-    print(view_name)
     return connection.exec_views(view_name)

@@ -51,7 +51,6 @@ def convert_country_name_to_code(country_name):
             return country.alpha_2
 
 
-
 def build_room(num_adults, num_children, cnn_ages=None):
     """
     Build the schema room according to the given parameters

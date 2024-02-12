@@ -21,7 +21,6 @@ def exec_stored_procedures(name, values):
     sql = f"EXEC {name} {values}"
     sql = sql.replace("(", "")
     sql = sql.replace(")", "")
-    print(sql)
     row_id = cursor.execute(sql).fetchall()
     if len(row_id) > 0:
         row_id = row_id
@@ -79,6 +78,5 @@ def exec_query_select_hotel_data(ids):
                     JOIN positions ON positions.ID = Position_id
                     JOIN images ON images.Hotel_id = hotels.ID
                     WHERE hotels.ID IN ( {string_ids} )"""
-        print(sql)
         data = cursor.execute(sql).fetchall()
         return data
