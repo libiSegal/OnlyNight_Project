@@ -31,7 +31,8 @@ def get_opportunities_response():
                     data[index].pop(1)  # delete the hotel id
                     room = create_room(*data[index])
                     res_rooms_list.append(room)
-                hotel = create_hotel(res_item, res_rooms_list)
+                unique_rooms = remove_duplicate_rooms(res_rooms_list)
+                hotel = create_hotel(res_item, unique_rooms)
                 res_hotels = check_hotel_is_exists(hotel, res_hotels)
     hotels = ResponseOpportunity(res_hotels).body
     return hotels
@@ -151,9 +152,23 @@ def check_hotel_is_exists(hotel_to_check, hotel_list):
     return hotel_list
 
 
+# def check_room_in_hotel(room_to_check, rooms):
+#     check = False
+#     for room in rooms:
+#         if room.get("RoomId") == room_to_check.get("RoomId"):
+#             check = True
+#     return check
+
+
 def check_room_in_hotel(room_to_check, rooms):
-    check = False
-    for room in rooms:
-        if room.get("RoomId") == room_to_check.get("RoomId"):
-            check = True
-    return check
+    return any(room.get("RoomId") == room_to_check.get("RoomId") for room in rooms)
+
+
+def remove_duplicate_rooms(room_list):
+    room_desc = []
+    for room in room_list:
+        if room.get("Desc") not in room_desc:
+            room_desc.append(room.get("Desc"))
+        else:
+            room_list.remove(room)
+    return room_list
