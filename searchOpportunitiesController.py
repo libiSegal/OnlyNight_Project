@@ -59,8 +59,11 @@ async def search_opportunities(body: SearchHotelsPostBody):
 
 @search_one_hotel_opportunities_router.post('/')
 async def search_one_hotels(body: SearchOneHotelPostBody):
-    return search_one_hotel.bePro_search_one(body.hotel_name, body.stars, body.check_in, body.check_out, body.city,
-                                             body.location, body.price)
+    try:
+        return search_one_hotel.bePro_search_one(body.hotel_name, body.stars, body.check_in, body.check_out, body.city,
+                                                 body.location, body.price)
+    except HTTPException:
+        return HTTPException(status_code=500, detail="Sorry, an error occurred")
 
 
 @bookings_router.get('/')
