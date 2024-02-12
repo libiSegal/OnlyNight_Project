@@ -39,13 +39,13 @@ def exec_views(name):
     return data
 
 
-def exec_functions(function_name, *args):
-    sql = f"SELECT * FROM {function_name}{args}"
-    data = cursor.execute(sql)
-    return data
-
-
 def exec_query_select_room_prices_by_ids(ids):
+    """
+    Execute a SQL query to select room price data based on a list of IDs.
+    This function builds and executes a SQL query to retrieve specific hotel data based on the provided list of IDs
+    :param ids: A list of hotel IDs to select data for
+    :return: The data retrieved from the database based on the specified IDs
+    """
     string_ids = str(ids).replace("[", "").replace("]", "")
     sql = f"SELECT ID, Price, Check_in FROM rooms WHERE ID IN ({string_ids})"
     data = cursor.execute(sql).fetchall()
@@ -53,6 +53,12 @@ def exec_query_select_room_prices_by_ids(ids):
 
 
 def exec_query_select_rooms(ids):
+    """
+    Execute a SQL query to select room data based on a list of IDs.
+    This function builds and executes a SQL query to retrieve specific hotel data based on the provided list of IDs
+    :param ids: A list of hotel IDs to select data for
+    :return:  The data retrieved from the database based on the specified IDs
+    """
     string_ids = str(ids).replace("[", "").replace("]", "")
     sql = f"""SELECT 
               rooms.ID, rooms.Hotel_id, rooms.Price, rooms.Description, 
@@ -67,6 +73,12 @@ def exec_query_select_rooms(ids):
 
 
 def exec_query_select_hotel_data(ids):
+    """
+    Execute a SQL query to select hotel data based on a list of IDs.
+    This function builds and executes a SQL query to retrieve specific hotel data based on the provided list of IDs.
+    :param ids: A list of hotel IDs to select data for
+    :return: The data retrieved from the database based on the specified IDs
+    """
     if len(ids) > 0:
         string_ids = str(ids).replace("[", "").replace("]", "")
         sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
@@ -80,3 +92,4 @@ def exec_query_select_hotel_data(ids):
                     WHERE hotels.ID IN ( {string_ids} )"""
         data = cursor.execute(sql).fetchall()
         return data
+

@@ -10,12 +10,12 @@ class RoomData:
     check_out: datetime
     nights: int
     b_token: str
-    remarks:str
+    remarks: str
     limit_date: datetime
     code: str
     code_description: str
 
-    def __init__(self, hotel_id, price, desc, sys_code, check_in, check_out, nights, b_token,remarks, limit_date, code,
+    def __init__(self, hotel_id, price, desc, sys_code, check_in, check_out, nights, b_token, remarks, limit_date, code,
                  code_description):
         self.hotel_id = hotel_id
         self.price = price

@@ -1,8 +1,15 @@
-from dbConnections import sql_queries
 from datetime import datetime
+from dbConnections import sql_queries
 
 
 def get_statistically_information_for_segment(segment, month, year):
+    """
+    This function select from database statistically information and screen out by month and year
+    :param segment: segment to get statistically information for
+    :param month: the month to get statistically information for
+    :param year: the year to get statistically information for
+    :return: statistically information on segment and month and year
+    """
     statistically_information_table = sql_queries.select_statistically_information_by_month(month)
     statistically_information_table_for_segment = []
     for row in statistically_information_table:
@@ -12,26 +19,51 @@ def get_statistically_information_for_segment(segment, month, year):
 
 
 def get_adr_for_month(statistically_information):
+    """
+    Get adr value from statistically_information
+    :param statistically_information: The statistically_information to get the adr value
+    :return: The adr value from the statistically_information
+    """
     return statistically_information[0][0]
 
 
 def get_revPar_for_month(statistically_information):
+    """
+    Get the revPar value for the statistical data
+    :param statistically_information: The statistical data to get the revPar value for
+    :return: The revPar value for the statistical data
+    """
     return statistically_information[0][1]
 
 
 def get_occupancy_for_month(statistically_information):
+    """
+    Get the occupancy value from the statistical data
+    :param statistically_information: The statistical data to get the occupancy for
+    :return: the occupancy value
+    """
     return statistically_information[0][2]
 
 
-def get_rooms(segment_id):
+def get_rooms_prices(segment_id):
+    """
+    This function takes a segment_id and returns the rooms prices for that segment
+    :param segment_id: The id of the segment to get the prices for rooms
+    :return: The rooms prices for that segment
+    """
     return sql_queries.select_room_prices_by_segment_id(segment_id)
 
 
 def short_rooms_by_month(rooms):
-    months = [[] for _ in range(12)]  # List comprehension to create empty lists for each month
+    """
+    This function takes a list of rooms and returns a list of short rooms by check in month
+    :param rooms: A list of rooms
+    :return: A list of short rooms by check in month
+    """
+    months = [[] for _ in range(12)]
     for room in rooms:
         check_in = room[2]
         date = datetime.strptime(check_in, "%Y-%m-%d %H:%M:%S")
-        month_index = date.month - 1  # Adjust month index to start from 0
+        month_index = date.month - 1
         months[month_index].append(room)
     return months

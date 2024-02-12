@@ -93,6 +93,12 @@ def insert_opportunities(opportunity_data):
 
 
 def select_hotels_name():
+    """
+    Retrieves a list of hotel names from the database.
+    This function executes the 'dbo.selectHotelsNames' view in the database
+    and collects the hotel names from the result set.
+    :return: A list of hotel names
+    """
     view_name = 'dbo.selectHotelsNames'
     names = []
     for row in connection.exec_views(view_name):
@@ -153,32 +159,6 @@ def select_data_of_hotels_by_id(ids):
         return hotels
 
 
-def select_number_of_rooms():
-    procedure_name = "dbo.selectNumberOfRooms"
-    res = connection.exec_stored_procedures(procedure_name, "")
-    return int(res[0])
-
-
-def select_first_room_id():
-    procedure_name = "dbo.selectFirstRoomId"
-    res = connection.exec_stored_procedures(procedure_name, "")
-    return int(res[0])
-
-
-def selectRooms(start, end):
-    func_name = "dbo.selectRooms"
-    return connection.exec_functions(func_name, start, end)
-
-
-def selectRoomsPrices():
-    """
-    select prices of rooms from database
-    :return: a list of room prices and ids
-    """
-    view_name = "dbo.selectRoomsPrices"
-    return connection.exec_views(view_name).fetchall()
-
-
 def select_room_price_by_id(ids):
     """
     select prices of rooms from database by ids
@@ -190,36 +170,27 @@ def select_room_price_by_id(ids):
 
 def select_statistically_information_by_month(month_number):
     """
-    select statistically information by month from database
-    :param month_number: the month number of the month to select the data
-    :return: the  information by month
+    Select statistically information by month from the database
+    :param month_number: The month number of the month to select the data
+    :return: The information by month
     """
-    view_name = ""
-    match month_number:
-        case 1:
-            view_name = "dbo.selectJanuaryData"
-        case 2:
-            view_name = "dbo.selectFebruaryData"
-        case 3:
-            view_name = "dbo.selectMarchData"
-        case 4:
-            view_name = "dbo.selectAprilData"
-        case 5:
-            view_name = "dbo.selectMayData"
-        case 6:
-            view_name = "dbo.selectJuneData"
-        case 7:
-            view_name = "dbo.selectJulyData"
-        case 8:
-            view_name = "dbo.selectAugustData"
-        case 9:
-            view_name = "dbo.selectSeptemberData"
-        case 10:
-            view_name = "dbo.selectOctoberData"
-        case 11:
-            view_name = "dbo.selectNovemberData"
-        case 12:
-            view_name = "dbo.selectDecemberData"
-        case _:
-            return ValueError("Month number is not in the range")
-    return connection.exec_views(view_name)
+    month_view_map = {
+        1: "dbo.selectJanuaryData",
+        2: "dbo.selectFebruaryData",
+        3: "dbo.selectMarchData",
+        4: "dbo.selectAprilData",
+        5: "dbo.selectMayData",
+        6: "dbo.selectJuneData",
+        7: "dbo.selectJulyData",
+        8: "dbo.selectAugustData",
+        9: "dbo.selectSeptemberData",
+        10: "dbo.selectOctoberData",
+        11: "dbo.selectNovemberData",
+        12: "dbo.selectDecemberData"
+    }
+
+    view_name = month_view_map.get(month_number)
+    if view_name:
+        return connection.exec_views(view_name)
+    else:
+        raise ValueError("Month number is not in the range")
