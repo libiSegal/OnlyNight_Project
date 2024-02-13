@@ -6,6 +6,10 @@ from moduls.objects.response_opportunity_obj import ResponseOpportunity
 
 
 def get_opportunities_response():
+    """
+    This function gets the opportunities and organize them into a response object
+    :return: The response object
+    """
     res_hotels = []
     segments = get_segments()
     for segment in segments:
@@ -42,11 +46,20 @@ def get_opportunities_response():
 
 
 def get_segments():
+    """
+    Returns a list of segment objects from the database
+    :return: A list of segments
+    """
     segments_data = sql_queries.select_search_setting()
     return [{"Id": seg[0], "Name": seg[1].split(",")[0]} for seg in segments_data]
 
 
 def extract_opportunities_from_db_type(opportunities):
+    """
+    Extract opportunities data room from the pyodbc type to list
+    :param opportunities: the pyodbc data room to extract
+    :return: A list of opportunities data
+    """
     new_opportunities = []
     for opportunity in opportunities:
         row_data = []

@@ -6,6 +6,7 @@ from moduls.objects.room_data_obj import RoomData
 def handle_data_hotel(search_id, hotel):
     """
     Make ready the date from beProApi to insert into the db
+    :param search_id: The segment id of the hotel
     :param hotel: the data to be inserted
     :return: None
     """
