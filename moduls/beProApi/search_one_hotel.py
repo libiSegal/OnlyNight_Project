@@ -9,6 +9,7 @@ from moduls.objects.response_opportunity_obj import ResponseOpportunityItem, Res
 def search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius):
     """
     Call the bePro_api to search the hotel
+    :param search_id: the id of the city of the hotel
     :param hotel_name: the name of the hotel to search
     :param stars: the number of stars of hotel to search
     :param check_in: the date of the check_in
@@ -155,9 +156,7 @@ def extract_data_from_sql_type(data):
     :param data: the sql data
     :return: the data by list type
     """
-    room_data = []
-    for item in data:
-        room_data.append(list(item))
+    room_data = [list(item) for item in data]
     return room_data
 
 
@@ -197,7 +196,6 @@ def check_correctness_of_the_hotel_name(hotel_name, hotel_name_to_check):
     :param hotel_name_to_check: the database hotel name to check
     :return: True if the hotel name is correctly the same that given
     """
-    print(hotel_name, hotel_name_to_check)
     return hotel_name == hotel_name_to_check
 
 
@@ -213,35 +211,37 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
     :param arbitrage: the profit of the hotel to search
     :return: all opportunities
     """
-    print(hotel_name, stars, check_in, check_out)
-    if not check_if_segment(segment):
-        print("The segment")
-        return "This city is not under surveillance"
-    search_id = get_search_settings_id(segment)
-    if hotel_name == "":
-        rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius)
-    else:
-        hotel_name = hotel_name + " " + segment
-        rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
-        print("room ids", rooms_ids)
-    if rooms_ids:
-        rooms_ids = list(set(rooms_ids))
-        prices = get_rooms_prices_from_db(rooms_ids)
-        last_year = get_last_year()
-        segment = {"Name": segment}
-        oppo = calculate_opportunities(prices, segment, last_year, arbitrage)
-        if len(oppo) > 0:
-            oppo_data = get_rooms_data_from_db(oppo)
-            hotel_data = select_hotel_data(oppo_data[0])
-            oppo_data = extract_data_from_sql_type(oppo_data)
-            item = fill_hotel_data(hotel_data)
-            if check_correctness_of_the_hotel_name(item.get("Name"), hotel_data[0][1]):
-                rooms = fill_room_data(oppo_data)
-                hotel = ResponseOpportunityHotel(item, rooms)
-                return hotel.body
-            else:
-                "No opportunities exist for this hotel"
+    try:
+        print(hotel_name, stars, check_in, check_out)
+        if not check_if_segment(segment):
+            return "This city is not under surveillance"
+        search_id = get_search_settings_id(segment)
+        if hotel_name == "":
+            rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius)
         else:
-            return "No opportunities exist for these values"
-    else:
-        return "No information exists for these values"
+            hotel_name = hotel_name + " " + segment
+            rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
+            print("room ids", rooms_ids)
+        if rooms_ids:
+            rooms_ids = list(set(rooms_ids))
+            prices = get_rooms_prices_from_db(rooms_ids)
+            last_year = get_last_year()
+            segment = {"Name": segment}
+            oppo = calculate_opportunities(prices, segment, last_year, arbitrage)
+            if len(oppo) > 0:
+                oppo_data = get_rooms_data_from_db(oppo)
+                hotel_data = select_hotel_data(oppo_data[0])
+                oppo_data = extract_data_from_sql_type(oppo_data)
+                item = fill_hotel_data(hotel_data)
+                if check_correctness_of_the_hotel_name(item.get("Name"), hotel_data[0][1]):
+                    rooms = fill_room_data(oppo_data)
+                    hotel = ResponseOpportunityHotel(item, rooms)
+                    return {"Hotels": [hotel.body]}
+                else:
+                    "No opportunities exist for this hotel"
+            else:
+                return "No opportunities exist for these values"
+        else:
+            return "No information exists for these values"
+    except Exception as e:
+        return Exception(f"Something went wrong in 'bePro_search_one' function.\n {e}")

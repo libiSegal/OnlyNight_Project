@@ -1,6 +1,7 @@
 from dbConnections import sql_queries as sql_queries
 from moduls.objects.hotel_data_obj import HotelData
 from moduls.objects.room_data_obj import RoomData
+from moduls.algorithm import calculate_hotel_price
 
 
 def handle_data_hotel(search_id, hotel):
@@ -14,16 +15,18 @@ def handle_data_hotel(search_id, hotel):
     address_info = hotel.get('AddressInfo')
     position = hotel.get('Position')
     images = hotel.get('Images')
-    hotel_data = HotelData(search_id, item.get('UniqueName'), item.get('Code'), item.get('Star'), address_info.get('Address'),
+    hotel_data = HotelData(search_id, item.get('UniqueName'), item.get('Code'), item.get('Star'),
+                           address_info.get('Address'),
                            address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
                            address_info.get('Country'), position.get('Latitude'),
                            position.get('Longitude'), position.get('PIP'))
 
     hotel_id = sql_queries.inset_hotel_data(hotel_data)[0]
     hotel_id = int(hotel_id[0])
+    if len(images) > 3:
+        images = images[:3]
     for img in images:
         sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
-
     rooms = hotel.get("RoomClasses")
     return handle_room_data(hotel_id, rooms)
 
@@ -49,6 +52,8 @@ def handle_room_data(hotel_id, rooms):
                              room.get('Nights'), hotel_rooms.get('BToken'),
                              room.get('Remarks'),
                              limit_date, code, desc)
+        # the new calculate func is here
+        # calculate_hotel_price.main(hotel_id, room)
         room_id = sql_queries.insert_room_data(room_data)
         if room_id is not None:
             room_id = int(room_id)

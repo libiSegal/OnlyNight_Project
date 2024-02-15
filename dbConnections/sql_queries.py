@@ -78,18 +78,10 @@ def insert_search_setting(stars, search_key):
     connection.exec_stored_procedures(insert_search_settings_procedure, search_settings_values)
 
 
-def insert_opportunities(opportunity_data):
-    """
-    insert opportunities into the database
-    :param opportunity_data: the opportunity data to insert
-    :return: None
-    """
-    procedure_name = 'dbo.insertOpportunities'
-    oppo_values = (opportunity_data.room_id, opportunity_data.hotel_id, opportunity_data.price, opportunity_data.desc,
-                   opportunity_data.sysCode, opportunity_data.check_in, opportunity_data.check_out,
-                   opportunity_data.nights, opportunity_data.b_token, opportunity_data.limit_date,
-                   opportunity_data.remarks, opportunity_data.code, opportunity_data.code_description)
-    connection.exec_stored_procedures(procedure_name, oppo_values)
+def insert_room_class(hotel_id, room_class, price):
+    procedure = "dbo.insertNewRoomClass"
+    room_class_values = (hotel_id, room_class, price)
+    connection.exec_stored_procedures(procedure, room_class_values)
 
 
 def select_hotels_name():
@@ -166,6 +158,11 @@ def select_room_price_by_id(ids):
     :return: the prices of the rooms
     """
     return connection.exec_query_select_room_prices_by_ids(ids)
+
+
+def select_room_class(hotel_id):
+    procedure_name = "dbo.selectHotelsRoomsClasses"
+    return connection.exec_stored_procedures(procedure_name, hotel_id)
 
 
 def select_statistically_information_by_month(month_number):

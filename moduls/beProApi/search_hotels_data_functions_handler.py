@@ -32,10 +32,7 @@ def get_country_name(search_key):
     """
     # search_key = search_key.replace(" ", "")
     country_name = search_key.split(',')
-    if len(country_name) == 2:
-        return country_name[1]
-    else:
-        return country_name[0]
+    return country_name[1] if len(country_name) == 2 else country_name[0]
 
 
 def convert_country_name_to_code(country_name):

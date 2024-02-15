@@ -79,17 +79,18 @@ def exec_query_select_hotel_data(ids):
     :param ids: A list of hotel IDs to select data for
     :return: The data retrieved from the database based on the specified IDs
     """
-    if len(ids) > 0:
-        string_ids = str(ids).replace("[", "").replace("]", "")
-        sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
-                    addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
-                    positions.Latitude, positions.Longitude, positions.Pip,
-                    images.Description, images.Img
-                    FROM hotels 
-                    JOIN addressesInfo ON addressesInfo.ID = Address_id 
-                    JOIN positions ON positions.ID = Position_id
-                    JOIN images ON images.Hotel_id = hotels.ID
-                    WHERE hotels.ID IN ( {string_ids} )"""
-        data = cursor.execute(sql).fetchall()
-        return data
+    if type(ids) is list:
+        if len(ids) > 0:
+            string_ids = str(ids).replace("[", "").replace("]", "")
+            sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
+                        addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
+                        positions.Latitude, positions.Longitude, positions.Pip,
+                        images.Description, images.Img
+                        FROM hotels 
+                        JOIN addressesInfo ON addressesInfo.ID = Address_id 
+                        JOIN positions ON positions.ID = Position_id
+                        JOIN images ON images.Hotel_id = hotels.ID
+                        WHERE hotels.ID IN ( {string_ids} )"""
+            data = cursor.execute(sql).fetchall()
+            return data
 
