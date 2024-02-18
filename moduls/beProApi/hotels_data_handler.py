@@ -53,7 +53,7 @@ def handle_room_data(hotel_id, rooms):
                              room.get('Remarks'),
                              limit_date, code, desc)
         # the new calculate func is here
-        # calculate_hotel_price.main(hotel_id, room)
+        calculate_hotel_price.main(hotel_id, room_data)
         room_id = sql_queries.insert_room_data(room_data)
         if room_id is not None:
             room_id = int(room_id)

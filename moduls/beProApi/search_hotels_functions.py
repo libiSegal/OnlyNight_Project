@@ -26,7 +26,7 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
     :param stars: the number of the hotels starts
     :return: the unique key of the response
     """
-    # all the data here is from bepro documentation
+    # all the data here is from be pro documentation
     post_search_url = "https://pub_srv.beprotravel.net/BePro/api/Hotels/SearchQuery"
     payload = json.dumps({
         "Query": {

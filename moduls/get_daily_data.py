@@ -27,7 +27,7 @@ def get_search_setting():
 def get_daily_data():
     dates = dates_in_year()
     search_settings = get_search_setting()
-    for search_setting in search_settings:
+    for search_setting in search_settings[4:]:
         async_loop(dates, search_setting)
 
 

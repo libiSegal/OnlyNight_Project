@@ -11,7 +11,7 @@ def search_opportunities(segment):
     :return: A list of opportunities ids
     """
     opportunities = []
-    arbitrage = 50
+    arbitrage = 150
     rooms = statisticall_information.get_rooms_prices(segment.get("Id"))
     shorted_rooms_by_month = statisticall_information.short_rooms_by_month(rooms)
     for i in range(1, 13):

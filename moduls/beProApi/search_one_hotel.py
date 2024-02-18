@@ -2,6 +2,7 @@ from datetime import datetime
 from moduls.beProApi import bepro_api
 from dbConnections import sql_queries
 from moduls.algorithm import statisticall_information
+from moduls.algorithm import opportunity_response_handler
 from moduls.objects.response_opportunity_obj import ResponseOpportunityItem, ResponseOpportunityImg, \
     ResponseOpportunityHotel, ResponseOpportunity
 
@@ -100,7 +101,7 @@ def fill_hotel_data(data_hotel):
     return item.body
 
 
-def fill_room_data(data_rooms):
+def fill_room_data(segment, data_rooms):
     """
     Fill the room data into the room object
     :param data_rooms: the data of the rooms
@@ -108,8 +109,9 @@ def fill_room_data(data_rooms):
     """
     rooms = []
     for data in data_rooms:
-        print(data.pop(1))
-        rooms.append(create_room(*data))
+        room = create_room(*data)
+        room = opportunity_response_handler.calculate_profit(segment, room)
+        rooms.append(room)
     return rooms
 
 
@@ -131,7 +133,7 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
     :param meal_plan_desc: the meal-plan description of the room
     :return: a room object
     """
-    body = {"RoomId": room_id, "Desc": desc, "Price": price, "SysCode": sys_code, "NumAdt": 2, "NumCnn": 0,
+    body = {"RoomId": room_id, "Desc": desc, "Price": price, "Profit": 0, "SysCode": sys_code, "NumAdt": 2, "NumCnn": 0,
             "CnnAge": [], "CheckIn": check_in, "CheckOut": check_out, "Nights": nights, "BToken": token,
             "LimitDate": limit_date, "Remarks": remarks, "MetaData": {}}
     body["MetaData"]["Code"] = meal_plan_code
@@ -156,8 +158,7 @@ def extract_data_from_sql_type(data):
     :param data: the sql data
     :return: the data by list type
     """
-    room_data = [list(item) for item in data]
-    return room_data
+    return [list(item) for item in data]
 
 
 def get_last_year():
@@ -221,20 +222,22 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
         else:
             hotel_name = hotel_name + " " + segment
             rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
-            print("room ids", rooms_ids)
+        print("room ids", rooms_ids)
         if rooms_ids:
             rooms_ids = list(set(rooms_ids))
             prices = get_rooms_prices_from_db(rooms_ids)
             last_year = get_last_year()
-            segment = {"Name": segment}
+            segment = {"Id": search_id, "Name": segment}
             oppo = calculate_opportunities(prices, segment, last_year, arbitrage)
+            print("oppo", len(oppo))
             if len(oppo) > 0:
                 oppo_data = get_rooms_data_from_db(oppo)
                 hotel_data = select_hotel_data(oppo_data[0])
                 oppo_data = extract_data_from_sql_type(oppo_data)
                 item = fill_hotel_data(hotel_data)
                 if check_correctness_of_the_hotel_name(item.get("Name"), hotel_data[0][1]):
-                    rooms = fill_room_data(oppo_data)
+                    rooms = fill_room_data(segment, oppo_data)
+                    print(rooms)
                     hotel = ResponseOpportunityHotel(item, rooms)
                     return {"Hotels": [hotel.body]}
                 else:
