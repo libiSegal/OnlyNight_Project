@@ -44,6 +44,7 @@ def get_opportunities_response():
                         unique_rooms = remove_duplicate_rooms(res_rooms_list)
                         hotel = create_hotel(res_item, unique_rooms)
                         res_hotels = check_hotel_is_exists(hotel, res_hotels)
+                        print("res hotels", len(res_hotels))
     hotels = ResponseOpportunity(res_hotels).body
     return hotels
 
@@ -193,19 +194,15 @@ def check_hotel_is_exists(hotel_to_check, hotel_list):
     :param hotel_list: A list of hotels to search for the hotel_to_check
     :return: The updated hotel_list with the hotel added or rooms updated
     """
-    if len(hotel_list) == 0:
-        hotel_list.append(hotel_to_check)
-    for hotel in hotel_list:
-        if hotel.get("Item").get("Name") == hotel_to_check.get("Item").get("Name") and hotel.get("Item").get(
-                "Code") == hotel_to_check.get("Item").get("Code"):
-            rooms = hotel_to_check.get("Rooms")
-            for i in range(len(rooms)):
-                if not check_room_in_hotel(rooms[i], hotel.get("Rooms")):
-                    hotel.get("Rooms").append(rooms[i])
-        else:
+    if type(hotel_list) is list:
+        if len(hotel_list) == 0:
             hotel_list.append(hotel_to_check)
-    print(type(hotel_list))
-    return hotel_list
+            return hotel_list
+        for hotel in hotel_list:
+            print(hotel.get("Item").get("Name"), hotel_to_check.get("Item").get("Name"))
+            if hotel.get("Item").get("Name") != hotel_to_check.get("Item").get("Name"):
+                hotel_list.append(hotel_to_check)
+        return hotel_list
 
 
 def check_room_in_hotel(room_to_check, rooms):
@@ -247,5 +244,5 @@ def calculate_profit(segment, room):
     date = datetime.strptime(check_in, "%Y-%m-%d %H:%M:%S")
     data_for_month = inflation.get_statistically_information_for_segment(segment, date.month, date.year - 1)
     adr = inflation.get_adr_for_month(data_for_month)
-    room["Profit"] = adr - room.get("Price")
+    room["Profit"] = round(adr - room.get("Price"), 2)
     return room

@@ -84,6 +84,12 @@ def insert_room_class(hotel_id, room_class, price):
     connection.exec_stored_procedures(procedure, room_class_values)
 
 
+def update_room_class_prices(hotel_id, price):
+    procedure = "dbo.updateRoomClassPrice"
+    values = (hotel_id, price)
+    connection.exec_stored_procedures(procedure, values)
+
+
 def select_hotels_name():
     """
     Retrieves a list of hotel names from the database.

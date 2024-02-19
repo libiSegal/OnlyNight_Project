@@ -186,8 +186,8 @@ def check_if_segment(city):
 def get_search_settings_id(city):
     search_settings = sql_queries.select_search_setting()
     for search_setting in search_settings:
-        if city in search_setting[1]:
-            return search_setting[0]
+        if city in search_setting[1]:  # search setting[1] == search setting name
+            return search_setting[0]  # search setting[0] == search setting id
 
 
 def check_correctness_of_the_hotel_name(hotel_name, hotel_name_to_check):
@@ -229,7 +229,6 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
             last_year = get_last_year()
             segment = {"Id": search_id, "Name": segment}
             oppo = calculate_opportunities(prices, segment, last_year, arbitrage)
-            print("oppo", len(oppo))
             if len(oppo) > 0:
                 oppo_data = get_rooms_data_from_db(oppo)
                 hotel_data = select_hotel_data(oppo_data[0])
@@ -237,7 +236,6 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
                 item = fill_hotel_data(hotel_data)
                 if check_correctness_of_the_hotel_name(item.get("Name"), hotel_data[0][1]):
                     rooms = fill_room_data(segment, oppo_data)
-                    print(rooms)
                     hotel = ResponseOpportunityHotel(item, rooms)
                     return {"Hotels": [hotel.body]}
                 else:

@@ -2,6 +2,7 @@ from dbConnections import sql_queries as sql_queries
 from moduls.objects.hotel_data_obj import HotelData
 from moduls.objects.room_data_obj import RoomData
 from moduls.algorithm import calculate_hotel_price
+from moduls import xsl_writer
 
 
 def handle_data_hotel(search_id, hotel):
@@ -23,11 +24,19 @@ def handle_data_hotel(search_id, hotel):
 
     hotel_id = sql_queries.inset_hotel_data(hotel_data)[0]
     hotel_id = int(hotel_id[0])
-    if len(images) > 3:
-        images = images[:3]
-    for img in images:
-        sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
+    if type(images) is list:
+        if len(images) > 3:
+            images = images[:3]
+        for img in images:
+            sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
+
+    list_for_csv = [item.get('UniqueName'), item.get('Code'), item.get('Star'),
+                    address_info.get('Address'),
+                    address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
+                    address_info.get('Country'), position.get('Latitude'),
+                    position.get('Longitude'), position.get('PIP')]
     rooms = hotel.get("RoomClasses")
+    print(len(rooms))
     return handle_room_data(hotel_id, rooms)
 
 
@@ -39,6 +48,7 @@ def handle_room_data(hotel_id, rooms):
     :return: None
     """
     rooms_ids = []
+    list_for_csv = []
     for room in rooms:
         hotel_rooms = room.get('HotelRooms')[0]
         code = room.get('Board').get('Basis').get('Code')
@@ -53,7 +63,14 @@ def handle_room_data(hotel_id, rooms):
                              room.get('Remarks'),
                              limit_date, code, desc)
         # the new calculate func is here
+
         calculate_hotel_price.main(hotel_id, room_data)
+        list_for_csv.append([room.get('Price').get('USD'), hotel_rooms.get('Desc'),
+                             hotel_rooms.get('SysCode'), room.get('CheckIn'),
+                             room.get('CheckOut'),
+                             room.get('Nights'), hotel_rooms.get('BToken'),
+                             room.get('Remarks'),
+                             limit_date, code, desc])
         room_id = sql_queries.insert_room_data(room_data)
         if room_id is not None:
             room_id = int(room_id)
@@ -61,4 +78,5 @@ def handle_room_data(hotel_id, rooms):
         if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
             if hotel_rooms.get('SysCode')[3] != 0:
                 pass
+    csv_writer.insert_westerns_into_excel(list_for_csv)
     return rooms_ids
