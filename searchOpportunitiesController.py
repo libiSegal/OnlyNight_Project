@@ -1,5 +1,3 @@
-import json
-
 import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException

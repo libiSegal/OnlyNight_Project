@@ -1,17 +1,4 @@
 import pycountry
-from datetime import datetime
-
-
-def change_dates_format(date):
-    """
-    Change date format
-    :param date: the date to change
-    :return: the new date format
-    """
-    date_string = date
-    parsed_date = datetime.strptime(date_string, "%Y/%m/%d")
-    formatted_date = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
-    return formatted_date
 
 
 def calculate_number_of_nights(check_in, check_out):
@@ -30,7 +17,6 @@ def get_country_name(search_key):
     :param search_key: a str of city and country names
     :return: only the country name
     """
-    # search_key = search_key.replace(" ", "")
     country_name = search_key.split(',')
     return country_name[1] if len(country_name) == 2 else country_name[0]
 

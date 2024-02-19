@@ -222,7 +222,6 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
         else:
             hotel_name = hotel_name + " " + segment
             rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
-        print("room ids", rooms_ids)
         if rooms_ids:
             rooms_ids = list(set(rooms_ids))
             prices = get_rooms_prices_from_db(rooms_ids)

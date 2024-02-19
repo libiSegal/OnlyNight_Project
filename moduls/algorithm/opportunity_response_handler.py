@@ -2,7 +2,6 @@ from datetime import datetime
 from dbConnections import sql_queries
 from moduls.algorithm import opportunitiesFinder
 from moduls.algorithm import statisticall_information as inflation
-from moduls.objects.response_opportunity_obj import ResponseOpportunity
 
 
 def get_opportunities_response():
@@ -17,6 +16,7 @@ def get_opportunities_response():
         opportunities_ids = opportunitiesFinder.search_opportunities(segment)
         if type(opportunities_ids) is not int:
             if len(opportunities_ids) > 0:
+                opportunities_ids = list(set(opportunities_ids))
                 opportunities = sql_queries.select_data_of_opportunities(opportunities_ids)
                 print("opportunities", len(opportunities))
                 hotels_ids = opportunitiesFinder.group_opportunities_hotels(opportunities)
@@ -31,21 +31,21 @@ def get_opportunities_response():
                     res_item = create_item(*data[0:item_data_end])
                     rooms_indexes = [index for index, item in enumerate(data) if isinstance(item, list)]
                     if type(rooms_indexes) is list:
-                        rooms_indexes_start = rooms_indexes[0]
-                        images = data[item_data_end:rooms_indexes_start]
-                        res_images = handle_hotel_images(images)
-                        res_item = add_images(res_item, res_images)
-                        res_rooms_list = []
-                        for index in rooms_indexes:
-                            data[index].pop(1)  # delete the hotel id
-                            room = create_room(*data[index])
-                            room = calculate_profit(segment, room)
-                            res_rooms_list.append(room)
-                        unique_rooms = remove_duplicate_rooms(res_rooms_list)
-                        hotel = create_hotel(res_item, unique_rooms)
-                        res_hotels = check_hotel_is_exists(hotel, res_hotels)
-                        print("res hotels", len(res_hotels))
-    hotels = ResponseOpportunity(res_hotels).body
+                        if len(rooms_indexes) > 0:
+                            rooms_indexes_start = rooms_indexes[0]
+                            images = data[item_data_end:rooms_indexes_start]
+                            res_images = handle_hotel_images(images)
+                            res_item = add_images(res_item, res_images)
+                            res_rooms_list = []
+                            for index in rooms_indexes:
+                                data[index].pop(1)  # delete the hotel id
+                                room = create_room(*data[index])
+                                room = calculate_profit(segment, room)
+                                res_rooms_list.append(room)
+                            unique_rooms = remove_duplicate_rooms(res_rooms_list)
+                            hotel = create_hotel(res_item, unique_rooms)
+                            res_hotels = check_hotel_is_exists(hotel, res_hotels)
+    hotels = {"Hotels": res_hotels}
     return hotels
 
 
@@ -194,14 +194,16 @@ def check_hotel_is_exists(hotel_to_check, hotel_list):
     :param hotel_list: A list of hotels to search for the hotel_to_check
     :return: The updated hotel_list with the hotel added or rooms updated
     """
+    flag = False
     if type(hotel_list) is list:
         if len(hotel_list) == 0:
             hotel_list.append(hotel_to_check)
             return hotel_list
         for hotel in hotel_list:
-            print(hotel.get("Item").get("Name"), hotel_to_check.get("Item").get("Name"))
-            if hotel.get("Item").get("Name") != hotel_to_check.get("Item").get("Name"):
-                hotel_list.append(hotel_to_check)
+            if hotel.get("Item").get("Name") == hotel_to_check.get("Item").get("Name"):
+                flag = True
+        if not flag:
+            hotel_list.append(hotel_to_check)
         return hotel_list
 
 
