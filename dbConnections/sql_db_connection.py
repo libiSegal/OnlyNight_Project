@@ -93,4 +93,4 @@ def exec_query_select_hotel_data(ids):
                         WHERE hotels.ID IN ( {string_ids} )"""
             data = cursor.execute(sql).fetchall()
             return data
-
+    return TypeError("ids parm must be a list")

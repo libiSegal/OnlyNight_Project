@@ -3,8 +3,7 @@ from moduls.beProApi import bepro_api
 from dbConnections import sql_queries
 from moduls.algorithm import statisticall_information
 from moduls.algorithm import opportunity_response_handler
-from moduls.objects.response_opportunity_obj import ResponseOpportunityItem, ResponseOpportunityImg, \
-    ResponseOpportunityHotel, ResponseOpportunity
+from moduls.objects.response_opportunity_obj import ResponseOpportunityHotel, ResponseOpportunity
 
 
 def search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius):
@@ -95,62 +94,27 @@ def fill_hotel_data(data_hotel):
     """
     images = []
     for data in data_hotel:
-        images.append(ResponseOpportunityImg(data[-1], data[-2]).body)
-    item = ResponseOpportunityItem()
-    item.validate_data(*data_hotel[0][:-2])
-    item.add_images(images)
-    return item.body
+        img = opportunity_response_handler.create_img(data[-2], data[-1])
+        images.append(img)
+    item = opportunity_response_handler.create_item(*data_hotel[0][:-2])
+    item = opportunity_response_handler.add_images(item, images)
+    return item
 
 
 def fill_room_data(segment, data_rooms):
     """
     Fill the room data into the room object
+    :param segment: the city to check the profit
     :param data_rooms: the data of the rooms
     :return: room objects
     """
     rooms = []
     for data in data_rooms:
-        room = create_room(*data)
+        data.pop(1)  # remove the hotel id
+        room = opportunity_response_handler.create_room(*data)
         room = opportunity_response_handler.calculate_profit(segment, room)
         rooms.append(room)
     return rooms
-
-
-def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, token,
-                limit_date, remarks, meal_plan_code, meal_plan_desc):
-    """
-    Create a new room object
-    :param room_id:the id of the room
-    :param price: the price of the room
-    :param desc: the description of the room
-    :param sys_code: the system code of the room
-    :param check_in: the check-in date of the room
-    :param check_out: the check-out date of the room
-    :param nights: the number of nights of the room
-    :param token: the token of the room
-    :param limit_date: the limit date of the room
-    :param remarks: the remarks of the room
-    :param meal_plan_code: the meal-plan code of the room
-    :param meal_plan_desc: the meal-plan description of the room
-    :return: a room object
-    """
-    body = {"RoomId": room_id, "Desc": desc, "Price": price, "Profit": 0, "SysCode": sys_code, "NumAdt": 2, "NumCnn": 0,
-            "CnnAge": [], "CheckIn": check_in, "CheckOut": check_out, "Nights": nights, "BToken": token,
-            "LimitDate": limit_date, "Remarks": remarks, "MetaData": {}}
-    body["MetaData"]["Code"] = meal_plan_code
-    body["MetaData"]["Desc"] = meal_plan_desc
-    return body
-
-
-def fill_response_data(item, rooms):
-    """
-    Fill and create the response data
-    :param item: the data object of the hotel
-    :param rooms: the data object of the rooms
-    :return: the response data to return to the user
-    """
-    hotel = ResponseOpportunityHotel(item, rooms)
-    return ResponseOpportunity([hotel.body]).body
 
 
 def extract_data_from_sql_type(data):
@@ -214,7 +178,6 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
     :return: all opportunities
     """
     try:
-        print(hotel_name, stars, check_in, check_out)
         if not check_if_segment(segment):
             return "This city is not under surveillance"
         search_id = get_search_settings_id(segment)
@@ -236,6 +199,7 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
                 item = fill_hotel_data(hotel_data)
                 if check_correctness_of_the_hotel_name(item.get("Name"), hotel_data[0][1]):
                     rooms = fill_room_data(segment, oppo_data)
+                    rooms = opportunity_response_handler.remove_duplicate_rooms(rooms)
                     hotel = ResponseOpportunityHotel(item, rooms)
                     return {"Hotels": [hotel.body]}
                 else:

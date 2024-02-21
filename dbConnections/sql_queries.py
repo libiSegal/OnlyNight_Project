@@ -151,10 +151,15 @@ def select_data_of_hotels_by_id(ids):
     :param ids:the ids of the hotels to select
     :return:the hotels data
     """
+    print("in sql func")
+    if isinstance(ids, int):
+        ids = [ids]
     res = connection.exec_query_select_hotel_data(ids)
     if res:
         hotels = [row for row in res]
         return hotels
+    else:
+        return []
 
 
 def select_room_price_by_id(ids):
