@@ -192,7 +192,7 @@ def decompress(compressed_file):
                     total_read += bytes_read
 
                 return buffer.decode('utf-8').rstrip('\x00')
-    except (Exception, ):
+    except (Exception,):
         return None
 
 
@@ -245,6 +245,8 @@ def insert_hotels_data_into_db(search_id):
     """
     hotels = jdr.get_clean_data(r'files')
     print('len of bePro hotels', len(hotels))
+    ids = []
     if hotels is not None:
         for hotel in hotels:
-            hotel_handler.handle_data_hotel(search_id, hotel)
+            ids = hotel_handler.handle_data_hotel(search_id, hotel)
+    return ids

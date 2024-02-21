@@ -1,7 +1,7 @@
 import openpyxl
 
 
-def insert_westerns_into_excel(rooms):
+def insert_rooms_into_excel(rooms):
     filename = 'rooms.xlsx'
     try:
         wb = openpyxl.load_workbook(filename)

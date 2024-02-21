@@ -21,6 +21,7 @@ def search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius):
     check_in = datetime.strptime(check_in, "%Y-%m-%d")
     check_out = datetime.strptime(check_out, "%Y-%m-%d")
     room_ids = bepro_api.search_hotels("hotel", search_id, hotel_name, stars, check_in, check_out, radius)
+    print("bePro room ids:", len(room_ids))
     if room_ids:
         return room_ids
     else:

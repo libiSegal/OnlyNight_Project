@@ -1,8 +1,8 @@
-from dbConnections import sql_queries as sql_queries
-from moduls.objects.hotel_data_obj import HotelData
+from moduls import xsl_writer
 from moduls.objects.room_data_obj import RoomData
 from moduls.algorithm import calculate_hotel_price
-from moduls import xsl_writer
+from moduls.objects.hotel_data_obj import HotelData
+from dbConnections import sql_queries as sql_queries
 
 
 def handle_data_hotel(search_id, hotel):
@@ -21,7 +21,7 @@ def handle_data_hotel(search_id, hotel):
                            address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
                            address_info.get('Country'), position.get('Latitude'),
                            position.get('Longitude'), position.get('PIP'))
-
+    print("bePro hotel name", item.get('UniqueName'))
     hotel_id = sql_queries.inset_hotel_data(hotel_data)[0]
     hotel_id = int(hotel_id[0])
     if type(images) is list:
@@ -29,14 +29,9 @@ def handle_data_hotel(search_id, hotel):
             images = images[:3]
         for img in images:
             sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
-
-    list_for_csv = [item.get('UniqueName'), item.get('Code'), item.get('Star'),
-                    address_info.get('Address'),
-                    address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
-                    address_info.get('Country'), position.get('Latitude'),
-                    position.get('Longitude'), position.get('PIP')]
     rooms = hotel.get("RoomClasses")
-    print(len(rooms))
+    print("bePro hotel rooms", len(rooms))
+    xsl_writer.insert_rooms_into_excel([[item.get('UniqueName')]])
     return handle_room_data(hotel_id, rooms)
 
 
@@ -48,7 +43,7 @@ def handle_room_data(hotel_id, rooms):
     :return: None
     """
     rooms_ids = []
-    list_for_csv = []
+    list_for_xsl = []
     for room in rooms:
         hotel_rooms = room.get('HotelRooms')[0]
         code = room.get('Board').get('Basis').get('Code')
@@ -63,9 +58,8 @@ def handle_room_data(hotel_id, rooms):
                              room.get('Remarks'),
                              limit_date, code, desc)
         # the new calculate func is here
-
-        calculate_hotel_price.main(hotel_id, room_data)
-        list_for_csv.append([room.get('Price').get('USD'), hotel_rooms.get('Desc'),
+        # calculate_hotel_price.calculate_hotel_room_class_price(hotel_id, room_data)
+        list_for_xsl.append([room.get('Price').get('USD'), hotel_rooms.get('Desc'),
                              hotel_rooms.get('SysCode'), room.get('CheckIn'),
                              room.get('CheckOut'),
                              room.get('Nights'), hotel_rooms.get('BToken'),
@@ -78,5 +72,5 @@ def handle_room_data(hotel_id, rooms):
         if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
             if hotel_rooms.get('SysCode')[3] != 0:
                 pass
-    csv_writer.insert_westerns_into_excel(list_for_csv)
+    xsl_writer.insert_rooms_into_excel(list_for_xsl)
     return rooms_ids
