@@ -39,7 +39,7 @@ def build_room(num_adults, num_children, cnn_ages=None):
     Build the schema room according to the given parameters
     :param num_adults: the number of adults in the room
     :param num_children: the number of children in the room
-    :param cnn_ages: optional -the age of the children if num_children != 0
+    :param cnn_ages: optional - the age of the children if num_children != 0
     :return: the schema room
     """
     rooms = []

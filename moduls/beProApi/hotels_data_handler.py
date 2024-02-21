@@ -24,9 +24,9 @@ def handle_data_hotel(search_id, hotel):
     print("bePro hotel name", item.get('UniqueName'))
     hotel_id = sql_queries.inset_hotel_data(hotel_data)[0]
     hotel_id = int(hotel_id[0])
-    if type(images) is list:
-        if len(images) > 3:
-            images = images[:3]
+    if type(images) is list and len(images) > 3:
+        images = images[:3]
+        print("images", len(images))
         for img in images:
             sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
     rooms = hotel.get("RoomClasses")

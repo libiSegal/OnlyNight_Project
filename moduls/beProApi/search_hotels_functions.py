@@ -15,7 +15,7 @@ last_index = './/ItemsLinkAsyncResults'
 
 def search_post_request(search_key, country_code, geo_code, check_in, nights, rooms, stars, radius):
     """
-    This function will send a post request to bepro api and search for hotels by all parameters
+    This function will send a post request to bePro api and search for hotels by all parameters
     :param radius: the radius of distance to search
     :param search_key: the city and country to search
     :param country_code: the country code
@@ -103,11 +103,11 @@ def get_the_hotels_details(unique_key):
 
 def get_hotels_request(unique_key):
     """
-    Send a get request by unique key to the bepro api and return a xml with urls of hotels
-    :param unique_key: the unique key to get from the bepro api the data
+    Send a get request by unique key to the bePro api and return a xml with urls of hotels
+    :param unique_key: the unique key to get from the bePro api the data
     :return: the response
     """
-    # all the data here is from bepro documentation
+    # all the data here is from bePro documentation
     get_hotels_details_url = (f"https://pub_srv.beprotravel.net/BePro/api/Hotels/GetJsonResults?"
                               f"token={unique_key}&compress=false")
     headers = {
@@ -123,7 +123,7 @@ def get_hotels_request(unique_key):
 def get_response_multiKey(xml_response):
     """
     return the multi key of the xml response
-    :param xml_response: a xml response that return from the bepro api
+    :param xml_response: a xml response that return from the bePro api
     :return: the multi key of the xml response
     """
     root = ET.fromstring(xml_response)
@@ -134,7 +134,7 @@ def get_response_multiKey(xml_response):
 def get_response_status(xml_response):
     """
     return the status of the xml response
-    :param xml_response: a xml response that return from the bepro api
+    :param xml_response: a xml response that return from the bePro api
     :return: the status of the xml response
     """
     root = ET.fromstring(xml_response)
@@ -164,7 +164,7 @@ def get_the_unique_key(json_response):
 
 def decompress(compressed_file):
     """
-    decompress the file that return from the bepro api request
+    decompress the file that return from the bePro api request
     :param compressed_file: the file to decompress
     :return: the decompressed file
     """
