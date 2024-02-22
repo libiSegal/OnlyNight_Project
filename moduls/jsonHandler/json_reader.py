@@ -102,7 +102,6 @@ def get_clean_data(folder_path):
         return None
 
 
-
 def delete_jsons_files(folder_path):
     """
     delete the json files from folder
@@ -112,5 +111,3 @@ def delete_jsons_files(folder_path):
     for filename in os.listdir(folder_path):
         if os.path.isfile(os.path.join(folder_path, filename)):
             os.remove(os.path.join(folder_path, filename))
-
-

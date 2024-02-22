@@ -19,10 +19,10 @@ def check_room_class_exist(room_class, room_classes):
     return False
 
 
-def insert_new_room_class(hotel_id, room_class, price):
+def insert_new_room_class(hotel_id, room_class, price, date):
     """Insert a new room class into the database."""
     room_class = remove_special_chars(room_class)
-    sql_queries.insert_room_class(hotel_id, room_class, price)
+    sql_queries.insert_room_class(hotel_id, room_class, price, date)
 
 
 def update_room_class_price(hotel_id, price):
@@ -32,7 +32,7 @@ def update_room_class_price(hotel_id, price):
 
 def get_room_classes_for_hotel(hotel_id):
     """Retrieve room classes for a specific hotel from the database."""
-    return sql_queries.select_room_class(hotel_id)
+    return sql_queries.select_hotel_room_class(hotel_id)
 
 
 def get_room_class_price(r_class, hotel_classes):
@@ -47,8 +47,15 @@ def calculate_hotel_room_class_price(hotel_id, room):
     """Calculate and update the room class price for a hotel."""
     hotel_classes = get_room_classes_for_hotel(hotel_id)
     if not check_room_class_exist(room.desc, hotel_classes):
-        insert_new_room_class(hotel_id, room.desc, room.price)
+        insert_new_room_class(hotel_id, room.desc, room.price, room.check_in)
     else:
         old_id, old_price = get_room_class_price(room.desc, hotel_classes)
         if old_price != 0 and room.price < old_price:
-            update_room_class_price(old_id, room.pric)
+            update_room_class_price(old_id, room.price)
+
+
+def get_hotel_room_classes(hotel_id):
+
+    hotel_classes = get_room_classes_for_hotel(hotel_id)
+
+    return [{"RoomClass": hotel[1], "Price": hotel[2]} for hotel in hotel_classes]

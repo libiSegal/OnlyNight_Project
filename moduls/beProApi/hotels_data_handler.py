@@ -58,7 +58,7 @@ def handle_room_data(hotel_id, rooms):
                              room.get('Remarks'),
                              limit_date, code, desc)
         # the new calculate func is here
-        # calculate_hotel_price.calculate_hotel_room_class_price(hotel_id, room_data)
+        calculate_hotel_price.calculate_hotel_room_class_price(hotel_id, room_data)
         list_for_xsl.append([room.get('Price').get('USD'), hotel_rooms.get('Desc'),
                              hotel_rooms.get('SysCode'), room.get('CheckIn'),
                              room.get('CheckOut'),

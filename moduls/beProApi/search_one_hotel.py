@@ -108,8 +108,9 @@ def fill_room_data(segment, data_rooms):
     :param data_rooms: the data of the rooms
     :return: room objects
     """
+    cheapest_room = opportunity_response_handler.find_cheapest_rooms(data_rooms)
     rooms = []
-    for data in data_rooms:
+    for data in cheapest_room:
         data.pop(1)  # remove the hotel id
         room = opportunity_response_handler.create_room(*data)
         room = opportunity_response_handler.calculate_profit(segment, room)
@@ -141,15 +142,22 @@ def check_if_segment(city):
     :return: True if the city is under surveillance, False otherwise
     """
     search_settings = sql_queries.select_search_setting()
+
     for search_setting in search_settings:
-        print(search_setting)
         if city in search_setting[1]:
             return True
+
     return False
 
 
 def get_search_settings_id(city):
+    """
+    Get the id of the search settings for a given city from database
+    :param city: the city to check the search settings id
+    :return: the id of the search settings for a given city
+    """
     search_settings = sql_queries.select_search_setting()
+
     for search_setting in search_settings:
         if city in search_setting[1]:  # search setting[1] == search setting name
             return search_setting[0]  # search setting[0] == search setting id
@@ -181,27 +189,31 @@ def bePro_search_one(hotel_name, stars, check_in, check_out, segment, radius, ar
         if not check_if_segment(segment):
             return "This city is not under surveillance"
         search_id = get_search_settings_id(segment)
+
         if hotel_name == "":
             rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius)
         else:
             hotel_name = hotel_name + " " + segment
             rooms_ids = search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius=1)
+
         if rooms_ids:
             rooms_ids = list(set(rooms_ids))
             prices = get_rooms_prices_from_db(rooms_ids)
             last_year = get_last_year()
             segment = {"Id": search_id, "Name": segment}
             oppo = calculate_opportunities(prices, segment, last_year, arbitrage)
-            if len(oppo) > 0:
+
+            if isinstance(oppo, list) and len(oppo) > 0:
                 oppo_data = get_rooms_data_from_db(oppo)
                 hotel_data = select_hotel_data(oppo_data[0])
                 oppo_data = extract_data_from_sql_type(oppo_data)
                 item = fill_hotel_data(hotel_data)
+
                 if check_correctness_of_the_hotel_name(item.get("Name"), hotel_data[0][1]):
                     rooms = fill_room_data(segment, oppo_data)
-                    rooms = opportunity_response_handler.remove_duplicate_rooms(rooms)
                     hotel = ResponseOpportunityHotel(item, rooms)
                     return {"Hotels": [hotel.body]}
+
                 else:
                     "No opportunities exist for this hotel"
             else:

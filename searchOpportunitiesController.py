@@ -6,6 +6,7 @@ from prices_example import price_example_object
 from fastapi.middleware.cors import CORSMiddleware
 from moduls.beProApi import bepro_api
 from moduls.algorithm import opportunity_response_handler
+from moduls.algorithm import calculate_hotel_price
 from moduls.beProApi import search_one_hotel
 
 app = FastAPI()
@@ -89,10 +90,10 @@ async def get_opportunities():
         return HTTPException(status_code=500, detail="Sorry, an error occurred")
 
 
-@prices_router.get('/')
-async def get_prices(hotel_id, room_id):
+@prices_router.get('/{hotel_id}')
+async def get_prices(hotel_id: str):
     try:
-        return price_example_object
+        return calculate_hotel_price.get_hotel_room_classes(hotel_id)
     except HTTPException:
         return HTTPException(status_code=500)
 

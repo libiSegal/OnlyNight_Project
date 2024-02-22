@@ -78,9 +78,9 @@ def insert_search_setting(stars, search_key):
     connection.exec_stored_procedures(insert_search_settings_procedure, search_settings_values)
 
 
-def insert_room_class(hotel_id, room_class, price):
+def insert_room_class(hotel_id, room_class, price, date):
     procedure = "dbo.insertNewRoomClass"
-    room_class_values = (hotel_id, room_class, price)
+    room_class_values = (hotel_id, room_class, price, date)
     connection.exec_stored_procedures(procedure, room_class_values)
 
 
@@ -134,24 +134,12 @@ def select_data_of_opportunities(ids):
         return res
 
 
-def select_opportunities():
-    """
-    select opportunities from the opportunities table in database
-    :return: the data of the opportunities
-    """
-    view_name = 'dbo.selectOpportunities'
-    res = connection.exec_views(view_name)
-    opportunities = [row for row in res]
-    return opportunities
-
-
 def select_data_of_hotels_by_id(ids):
     """
     select data from the hotels table by ids
     :param ids:the ids of the hotels to select
     :return:the hotels data
     """
-    print("in sql func")
     if isinstance(ids, int):
         ids = [ids]
     res = connection.exec_query_select_hotel_data(ids)
@@ -171,7 +159,7 @@ def select_room_price_by_id(ids):
     return connection.exec_query_select_room_prices_by_ids(ids)
 
 
-def select_room_class(hotel_id):
+def select_hotel_room_class(hotel_id):
     procedure_name = "dbo.selectHotelsRoomsClasses"
     return connection.exec_stored_procedures(procedure_name, hotel_id)
 

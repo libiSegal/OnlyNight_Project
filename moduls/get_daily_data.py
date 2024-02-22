@@ -10,22 +10,19 @@ from dbConnections import sql_queries as sql_connection
 from moduls.beProApi import bepro_api
 
 
-def dates_in_year():
-    dates = pd.date_range(date.today(), date(date.today().year, 12, 31), freq='D')
-    dates = list(dates)
-    return dates
+def get_dates_in_year():
+    return list(pd.date_range(date.today(), date(date.today().year, 12, 31), freq='D'))
 
 
 def get_search_setting():
-    search_settings = sql_connection.select_search_setting()
     search_settings_list = []
-    for row in search_settings:
+    for row in sql_connection.select_search_setting():
         search_settings_list.append({"id": row[0], "search_key": row[1], "stars": row[2]})
     return search_settings_list
 
 
 def get_daily_data():
-    dates = dates_in_year()
+    dates = get_dates_in_year()
     search_settings = get_search_setting()
     for search_setting in search_settings[1:]:
         async_loop(dates, search_setting)

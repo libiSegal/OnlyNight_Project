@@ -1,3 +1,4 @@
+from itertools import groupby
 from datetime import datetime
 from dbConnections import sql_queries
 from moduls.algorithm import opportunitiesFinder
@@ -65,6 +66,11 @@ def get_opportunities_response():
 
 
 def process_segment(segment):
+    """
+        Process a segment of data related to opportunities and extract relevant hotel information.
+        :param: segment (str): A segment of data containing information about opportunities.
+        :return list: A list of hotels extracted from the segment data.
+        """
     hotels = []
     opportunities_ids = opportunitiesFinder.search_opportunities(segment)
 
@@ -79,43 +85,55 @@ def process_segment(segment):
 
         for hotel_data in hotels_with_rooms.values():
             hotel = process_hotel_data(segment, hotel_data)
-            hotels = check_hotel_is_exists(hotel, hotels)
+            if len(hotel.get("Rooms")) > 0:
+                hotels = check_hotel_is_exists(hotel, hotels)
 
     return hotels
 
 
 def process_hotel_data(segment, data):
+    """
+    Process hotel data and return it ready to be sent to client side
+    :param segment: the segment of  hotel
+    :param data: the hotel data
+    :return: the hotel ready to be sent to client side
+    """
     hotel_info_end = data.index("1") + 1
     hotel_info = create_item(*data[:hotel_info_end])
     images_start = hotel_info_end
-    rooms_start = [index for index, item in enumerate(data) if isinstance(item, list)][0]
+    rooms_indexes = [index for index, item in enumerate(data) if isinstance(item, list)]
 
-    images = handle_hotel_images(data[images_start:rooms_start])
-    rooms_data = data[rooms_start:]
+    if isinstance(rooms_indexes, list) and len(rooms_indexes) > 0:
+        rooms_start = rooms_indexes[0]
+        images = handle_hotel_images(data[images_start:rooms_start])
+        rooms_data = data[rooms_start:]
+        hotel_info = add_images(hotel_info, images)
+        unique_rooms = process_rooms_data(segment, rooms_data)
+        hotel = create_hotel(hotel_info, unique_rooms)
+        return hotel
 
-    hotel_info = add_images(hotel_info, images)
-
-    unique_rooms = process_rooms_data(segment, rooms_data)
-
-    hotel = create_hotel(hotel_info, unique_rooms)
-
+    hotel = create_hotel(hotel_info, [])
     return hotel
 
 
 def process_rooms_data(segment, rooms_data):
-    rooms = []
+    """
+    Processes the rooms data for each hotel and returns it ready to be sent to the client
+    :param segment: the segment of the hotel data
+    :param rooms_data: the rooms data
+    :return: the rooms data of hotel ready to be sent to the client side
+    """
+    uniques_rooms = []
 
-    for room_data in rooms_data:
+    cheapest_rooms = find_cheapest_rooms(rooms_data)
+
+    for room_data in cheapest_rooms:
         room_data.pop(1)  # delete the hotel id
         room = create_room(*room_data)
         room = calculate_profit(segment, room)
-        rooms.append(room)
+        uniques_rooms.append(room)
 
-    print("len(rooms) before=", len(rooms))
-    unique_rooms = remove_duplicate_rooms(rooms)
-    print("len(rooms) after=", len(unique_rooms))
-
-    return unique_rooms
+    return uniques_rooms
 
 
 def get_segments():
@@ -306,6 +324,22 @@ def remove_duplicate_rooms(room_list):
             room_list.remove(room)
 
     return unique_rooms
+
+
+def find_cheapest_rooms(rooms):
+    cheapest_rooms = []
+    grouped_rooms_by_desc = []
+
+    rooms.sort(key=lambda x: x[3])
+
+    for k, v in groupby(rooms, key=lambda x: x[3]):
+        grouped_rooms_by_desc.append(list(v))
+
+    for group in grouped_rooms_by_desc:
+        group.sort(key=lambda x: x[3])
+        cheapest_rooms.append(group[0])
+
+    return cheapest_rooms
 
 
 def calculate_profit(segment, room):
