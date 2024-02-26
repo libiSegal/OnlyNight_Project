@@ -11,6 +11,7 @@ URL = 'https://pub_srv.beprotravel.net/BePro'
 def search_hotels(search_type, search_id, search_key, stars, check_in, check_out, radius=5):
     """
     this function is used to search hotels by bePro api and inserted the response into the database
+    :param search_id: the db table id of the hotel city
     :param search_type: show if search one hotel ro more
     :param radius: the radius of distance to search
     :param search_key: the city and country of the hotel you want to search

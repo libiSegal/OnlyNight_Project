@@ -36,9 +36,9 @@ def get_hotels_from_json(json_file):
 
 def get_hotel_BPID(hotel):
     """
-    Reads the hotel and its BPID
+    Reads the hotel and its B-PID
     :param hotel: the hotel to read
-    :return:the BPID of the hotel
+    :return:the B PID of the hotel
     """
     return hotel.get("Item").get("Bpid")
 
@@ -98,7 +98,7 @@ def get_clean_data(folder_path):
     try:
         hotels_date, hotel_ids_list = get_all_data(folder_path)
         return remove_duplicates_hotels(hotels_date, hotel_ids_list)
-    except Exception:
+    except (Exception, ):
         return None
 
 

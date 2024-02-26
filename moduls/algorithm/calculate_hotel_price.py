@@ -1,7 +1,8 @@
 import re
 import itertools
 from datetime import datetime
-from dbConnections import sql_queries
+from dbConnections import sql_insert_queries
+from dbConnections import sql_select_queries
 
 
 def remove_special_chars(input_string):
@@ -35,17 +36,17 @@ def check_cancellation_policy(room):
 def insert_new_room_class(hotel_id, room_class, price, date):
     """Insert a new room class into the database."""
     room_class = remove_special_chars(room_class)
-    sql_queries.insert_room_class(hotel_id, room_class, price, date)
+    sql_insert_queries.insert_room_class(hotel_id, room_class, price, date)
 
 
 def update_room_class_price(hotel_id, price):
     """Update the room class price in the database."""
-    sql_queries.update_room_class_prices(hotel_id, price)
+    sql_insert_queries.update_room_class_prices(hotel_id, price)
 
 
 def get_room_classes_for_hotel(hotel_id):
     """Retrieve room classes for a specific hotel from the database."""
-    return sql_queries.select_hotel_room_class(hotel_id)
+    return sql_select_queries.select_hotel_room_class(hotel_id)
 
 
 def get_room_class_price(r_class, hotel_classes):
@@ -89,8 +90,8 @@ def short_info_by_month(info):
 
 def get_history_prices(hotel_id):
     """Get hotel monthly prices for last year"""
-    segment_id = sql_queries.select_segment_id_of_hotel(hotel_id)
-    info = sql_queries.select_statistical_information_by_id(segment_id[0][0], datetime.today().year - 1)
+    segment_id = sql_select_queries.select_segment_id_of_hotel(hotel_id)
+    info = sql_select_queries.select_statistical_information_by_id(segment_id[0][0], datetime.today().year - 1)
     return short_info_by_month(info)
 
 

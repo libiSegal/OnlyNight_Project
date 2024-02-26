@@ -1,6 +1,6 @@
 from itertools import groupby
 from datetime import datetime
-from dbConnections import sql_queries
+from dbConnections import sql_select_queries
 from moduls.algorithm import opportunitiesFinder
 from moduls.algorithm import statisticall_information as inflation
 
@@ -32,7 +32,7 @@ def process_segment(segment):
     opportunities_ids = opportunitiesFinder.search_opportunities(segment)
 
     if not isinstance(opportunities_ids, int) and len(opportunities_ids) > 0:
-        opportunities = sql_queries.select_data_of_opportunities(list(set(opportunities_ids)))
+        opportunities = sql_select_queries.select_data_of_opportunities(list(set(opportunities_ids)))
         hotels_ids = opportunitiesFinder.group_opportunities_hotels(opportunities)
         hotels_data = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
         grouped_hotels = opportunitiesFinder.group_hotels_by_id(hotels_data)
@@ -98,7 +98,7 @@ def get_segments():
     Returns a list of segment objects from the database
     :return: A list of segments
     """
-    segments_data = sql_queries.select_search_setting()
+    segments_data = sql_select_queries.select_search_setting()
     return [{"Id": seg[0], "Name": seg[1].split(",")[0]} for seg in segments_data]
 
 

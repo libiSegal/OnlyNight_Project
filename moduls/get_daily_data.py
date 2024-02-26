@@ -1,11 +1,9 @@
 import time
-import schedule
 import datetime
 import pandas as pd
 from datetime import date
-
-from dbConnections import sql_queries as sql_connection
 from moduls.beProApi import bepro_api
+from dbConnections import sql_select_queries
 
 
 def get_dates_in_year():
@@ -14,7 +12,7 @@ def get_dates_in_year():
 
 def get_search_setting():
     search_settings_list = []
-    for row in sql_connection.select_search_setting():
+    for row in sql_select_queries.select_search_setting():
         search_settings_list.append({"id": row[0], "search_key": row[1], "stars": row[2]})
     return search_settings_list
 

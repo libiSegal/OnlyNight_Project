@@ -1,5 +1,5 @@
 from datetime import datetime
-from dbConnections import sql_queries
+from dbConnections import sql_select_queries
 
 
 def get_statistically_information_for_segment(segment, month, year):
@@ -10,7 +10,7 @@ def get_statistically_information_for_segment(segment, month, year):
     :param year: the year to get statistically information for
     :return: statistically information on segment and month and year
     """
-    statistically_information_table = sql_queries.select_statistically_information_by_month(month)
+    statistically_information_table = sql_select_queries.select_statistically_information_by_month(month)
     statistically_information_table_for_segment = []
     for row in statistically_information_table:
         if row[4] == segment.get("Name") and row[3] == year:
@@ -57,7 +57,7 @@ def get_rooms_prices(segment_id):
     :param segment_id: The id of the segment to get the prices for rooms
     :return: The rooms prices for that segment
     """
-    return sql_queries.select_room_prices_by_segment_id(segment_id)
+    return sql_select_queries.select_room_prices_by_segment_id(segment_id)
 
 
 def short_rooms_by_month(rooms):

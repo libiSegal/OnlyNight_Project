@@ -1,9 +1,9 @@
 from datetime import datetime
 from moduls.beProApi import bepro_api
-from dbConnections import sql_queries
+from dbConnections import sql_select_queries
 from moduls.algorithm import statisticall_information
 from moduls.algorithm import opportunity_response_handler
-from moduls.objects.response_opportunity_obj import ResponseOpportunityHotel, ResponseOpportunity
+from moduls.objects.response_opportunity_obj import ResponseOpportunityHotel
 
 
 def search_one_hotel(search_id, hotel_name, stars, check_in, check_out, radius):
@@ -33,7 +33,7 @@ def get_rooms_prices_from_db(ids):
     :param ids: the ids of the rooms
     :return:the prices and check in date of the rooms
     """
-    return sql_queries.select_room_price_by_id(ids)
+    return sql_select_queries.select_room_price_by_id(ids)
 
 
 def calculate_opportunities(room_prices, segment, last_year, arbitrage=50):
@@ -73,7 +73,7 @@ def get_rooms_data_from_db(ids):
     :param ids: the ids of the rooms
     :return: all the date about the room
     """
-    return sql_queries.select_data_of_opportunities(ids)
+    return sql_select_queries.select_data_of_opportunities(ids)
 
 
 def select_hotel_data(room):
@@ -83,7 +83,7 @@ def select_hotel_data(room):
     :return: all the data of the hotel
     """
     hotel_id = room[1]
-    return sql_queries.select_data_of_hotels_by_id(hotel_id)
+    return sql_select_queries.select_data_of_hotels_by_id(hotel_id)
 
 
 def fill_hotel_data(data_hotel):
@@ -141,7 +141,7 @@ def check_if_segment(city):
     :param city: the city to check
     :return: True if the city is under surveillance, False otherwise
     """
-    search_settings = sql_queries.select_search_setting()
+    search_settings = sql_select_queries.select_search_setting()
 
     for search_setting in search_settings:
         if city in search_setting[1]:
@@ -156,7 +156,7 @@ def get_search_settings_id(city):
     :param city: the city to check the search settings id
     :return: the id of the search settings for a given city
     """
-    search_settings = sql_queries.select_search_setting()
+    search_settings = sql_select_queries.select_search_setting()
 
     for search_setting in search_settings:
         if city in search_setting[1]:  # search setting[1] == search setting name

@@ -1,7 +1,8 @@
 import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
-from dbConnections import sql_queries
+from dbConnections import sql_insert_queries
+from dbConnections import sql_select_queries
 from fastapi.middleware.cors import CORSMiddleware
 from moduls.beProApi import bepro_api
 from moduls.algorithm import opportunity_response_handler
@@ -49,7 +50,7 @@ app.add_middleware(
 @search_opportunities_router.post('/')
 async def search_opportunities(body: SearchHotelsPostBody):
     try:
-        sql_queries.insert_search_setting(body.stars, body.search_key)
+        sql_insert_queries.insert_search_setting(body.stars, body.search_key)
         return {"massage": "The request was successfully received - search setting added successfully"}
     except HTTPException:
         return HTTPException(status_code=500)
@@ -99,7 +100,7 @@ async def get_prices(hotel_id: str):
 
 @hotels_names_router.get('/')
 async def get_hotels_names():
-    hotels = sql_queries.select_hotels_name()
+    hotels = sql_select_queries.select_hotels_name()
     hotels_set = set(hotels)
     return {"Hotels": hotels_set}
 

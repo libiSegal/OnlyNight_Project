@@ -2,7 +2,7 @@ from moduls import xsl_writer
 from moduls.objects.room_data_obj import RoomData
 from moduls.algorithm import calculate_hotel_price
 from moduls.objects.hotel_data_obj import HotelData
-from dbConnections import sql_queries as sql_queries
+from dbConnections import sql_insert_queries
 
 
 def handle_data_hotel(search_id, hotel):
@@ -22,13 +22,13 @@ def handle_data_hotel(search_id, hotel):
                            address_info.get('Country'), position.get('Latitude'),
                            position.get('Longitude'), position.get('PIP'))
     print("bePro hotel name", item.get('UniqueName'))
-    hotel_id = sql_queries.inset_hotel_data(hotel_data)[0]
+    hotel_id = sql_insert_queries.inset_hotel_data(hotel_data)[0]
     hotel_id = int(hotel_id[0])
     if type(images) is list and len(images) > 3:
         images = images[:3]
         print("images", len(images))
         for img in images:
-            sql_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
+            sql_insert_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
     rooms = hotel.get("RoomClasses")
     print("bePro hotel rooms", len(rooms))
     xsl_writer.insert_rooms_into_excel([[item.get('UniqueName')]])
@@ -65,7 +65,7 @@ def handle_room_data(hotel_id, rooms):
                              room.get('Nights'), hotel_rooms.get('BToken'),
                              room.get('Remarks'),
                              limit_date, code, desc])
-        room_id = sql_queries.insert_room_data(room_data)
+        room_id = sql_insert_queries.insert_room_data(room_data)
         if room_id is not None:
             room_id = int(room_id)
             rooms_ids.append(room_id)

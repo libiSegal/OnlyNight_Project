@@ -1,6 +1,6 @@
 import datetime
 import itertools
-from dbConnections import sql_queries
+from dbConnections import sql_select_queries
 from moduls.algorithm import statisticall_information
 
 
@@ -58,7 +58,7 @@ def get_opportunities_hotels(ids):
     :param ids: The hotels ids
     :return: The opportunities hotels data from the database
     """
-    return sql_queries.select_data_of_hotels_by_id(ids)
+    return sql_select_queries.select_data_of_hotels_by_id(ids)
 
 
 def group_hotels_by_id(hotels_list):
