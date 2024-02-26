@@ -24,7 +24,9 @@ def get_adr_for_month(statistically_information):
     :param statistically_information: The statistically_information to get the adr value
     :return: The adr value from the statistically_information
     """
-    return statistically_information[0][0]
+    if isinstance(statistically_information, list) and isinstance(statistically_information[0], list):
+        return statistically_information[0][0]
+    return 0
 
 
 def get_revPar_for_month(statistically_information):
@@ -33,7 +35,9 @@ def get_revPar_for_month(statistically_information):
     :param statistically_information: The statistical data to get the revPar value for
     :return: The revPar value for the statistical data
     """
-    return statistically_information[0][1]
+    if isinstance(statistically_information, list) and isinstance(statistically_information[0], list):
+        return statistically_information[0][1]
+    return 0
 
 
 def get_occupancy_for_month(statistically_information):
@@ -42,7 +46,9 @@ def get_occupancy_for_month(statistically_information):
     :param statistically_information: The statistical data to get the occupancy for
     :return: the occupancy value
     """
-    return statistically_information[0][2]
+    if isinstance(statistically_information, list) and isinstance(statistically_information[0], list):
+        return statistically_information[0][2]
+    return 0
 
 
 def get_rooms_prices(segment_id):

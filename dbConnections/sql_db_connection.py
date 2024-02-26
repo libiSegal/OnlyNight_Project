@@ -22,7 +22,7 @@ def exec_stored_procedures(name, values):
     sql = sql.replace("(", "")
     sql = sql.replace(")", "")
     row_id = cursor.execute(sql).fetchall()
-    if len(row_id) > 0:
+    if isinstance(row_id, list) and len(row_id) > 0:
         row_id = row_id
     conn.commit()
     return row_id
@@ -48,8 +48,7 @@ def exec_query_select_room_prices_by_ids(ids):
     """
     string_ids = str(ids).replace("[", "").replace("]", "")
     sql = f"SELECT ID, Price, Check_in FROM rooms WHERE ID IN ({string_ids})"
-    data = cursor.execute(sql).fetchall()
-    return data
+    return cursor.execute(sql).fetchall()
 
 
 def exec_query_select_rooms(ids):
@@ -68,8 +67,7 @@ def exec_query_select_rooms(ids):
               FROM rooms 
              JOIN metadata ON metadata.Room_ID = rooms.ID
              WHERE rooms.ID IN ({string_ids})"""
-    data = cursor.execute(sql).fetchall()
-    return data
+    return cursor.execute(sql).fetchall()
 
 
 def exec_query_select_hotel_data(ids):

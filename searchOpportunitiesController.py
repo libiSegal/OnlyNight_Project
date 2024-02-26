@@ -2,7 +2,6 @@ import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, APIRouter, HTTPException
 from dbConnections import sql_queries
-from prices_example import price_example_object
 from fastapi.middleware.cors import CORSMiddleware
 from moduls.beProApi import bepro_api
 from moduls.algorithm import opportunity_response_handler

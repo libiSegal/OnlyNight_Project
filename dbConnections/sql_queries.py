@@ -90,6 +90,11 @@ def update_room_class_prices(hotel_id, price):
     connection.exec_stored_procedures(procedure, values)
 
 
+def select_segment_id_of_hotel(hotel_id):
+    procedure = "dbo.selectHotelSegment"
+    return connection.exec_stored_procedures(procedure, hotel_id)
+
+
 def select_hotels_name():
     """
     Retrieves a list of hotel names from the database.
@@ -116,6 +121,12 @@ def select_search_setting():
 def select_room_prices_by_segment_id(seg_id):
     procedure_name = 'dbo.selectRoomsPricesById'
     return connection.exec_stored_procedures(procedure_name, seg_id)
+
+
+def select_statistical_information_by_id(segment_id, year):
+    procedure_name = 'dbo.selectStatisticalInformationById'
+    values = (segment_id, year)
+    return connection.exec_stored_procedures(procedure_name, values)
 
 
 def select_data_of_opportunities(ids):
