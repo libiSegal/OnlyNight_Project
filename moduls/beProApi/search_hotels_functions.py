@@ -248,5 +248,5 @@ def insert_hotels_data_into_db(search_id):
     ids = []
     if hotels is not None:
         for hotel in hotels:
-            ids = hotel_handler.handle_data_hotel(search_id, hotel)
+            ids += hotel_handler.handle_data_hotel(search_id, hotel)
     return ids
