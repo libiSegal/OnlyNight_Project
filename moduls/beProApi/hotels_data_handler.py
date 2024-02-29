@@ -26,12 +26,9 @@ def handle_data_hotel(search_id, hotel):
     hotel_id = int(hotel_id[0])
     if type(images) is list and len(images) > 3:
         images = images[:3]
-        print("images", len(images))
         for img in images:
             sql_insert_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
     rooms = hotel.get("RoomClasses")
-    print("bePro hotel rooms", len(rooms))
-    xsl_writer.insert_rooms_into_excel([[item.get('UniqueName')]])
     return handle_room_data(hotel_id, rooms)
 
 
@@ -72,5 +69,5 @@ def handle_room_data(hotel_id, rooms):
         if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
             if hotel_rooms.get('SysCode')[3] != 0:
                 pass
-    xsl_writer.insert_rooms_into_excel(list_for_xsl)
+    # xsl_writer.insert_rooms_into_excel(list_for_xsl)
     return rooms_ids

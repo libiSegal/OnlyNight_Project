@@ -244,7 +244,7 @@ def insert_hotels_data_into_db(search_id):
     :return: None
     """
     hotels = jdr.get_clean_data(r'files')
-    print('len of bePro hotels', len(hotels))
+    # print('len of bePro hotels', hotels)
     ids = []
     if hotels is not None:
         for hotel in hotels:

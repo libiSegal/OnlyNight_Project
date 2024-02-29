@@ -222,9 +222,7 @@ def create_room(room_id, price, desc, sys_code, check_in, check_out, nights, tok
     """
     body = {"RoomId": room_id, "Desc": desc, "Price": price, "Profit": 0, "SysCode": sys_code, "NumAdt": 2, "NumCnn": 0,
             "CnnAge": [], "CheckIn": check_in, "CheckOut": check_out, "Nights": nights, "BToken": token,
-            "LimitDate": limit_date, "Remarks": remarks, "MetaData": {}}
-    body["MetaData"]["Code"] = meal_plan_code
-    body["MetaData"]["Desc"] = meal_plan_desc
+            "LimitDate": limit_date, "Remarks": remarks, "MetaData": {"Code": meal_plan_code, "Desc": meal_plan_desc}}
     return body
 
 
@@ -310,5 +308,9 @@ def calculate_profit(segment, room):
     date = datetime.strptime(check_in, "%Y-%m-%d %H:%M:%S")
     data_for_month = inflation.get_statistically_information_for_segment(segment, date.month, date.year - 1)
     adr = inflation.get_adr_for_month(data_for_month)
-    room["Profit"] = round(adr - room.get("Price"), 2)
+    profit = round(adr - room.get("Price"), 2)
+    if profit > 0:
+        room["Profit"] = profit
+    else:
+        room["Profit"] = 0
     return room

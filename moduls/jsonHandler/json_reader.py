@@ -98,8 +98,8 @@ def get_clean_data(folder_path):
     try:
         hotels_date, hotel_ids_list = get_all_data(folder_path)
         return remove_duplicates_hotels(hotels_date, hotel_ids_list)
-    except (Exception, ):
-        return None
+    except Exception as e:
+        return "an exception according in 'get_clean_data' ", e
 
 
 def delete_jsons_files(folder_path):
