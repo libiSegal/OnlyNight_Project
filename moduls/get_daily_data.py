@@ -27,7 +27,6 @@ def get_daily_data():
 def daily_data_for_city(dates, search_setting):
     print(search_setting)
     for day in dates:
-        print(day)
         next_day_date = day + datetime.timedelta(days=1)
         start_time = time.time()
         bepro_api.search_hotels("hotels", search_setting.get("id"), search_setting.get("search_key"),

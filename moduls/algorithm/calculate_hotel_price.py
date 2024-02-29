@@ -24,7 +24,6 @@ def check_room_class_exist(room_class, room_classes):
 
 def check_cancellation_policy(room):
     """Check if date of cancellation policy is effect."""
-    print(room.limit_date)
     limit_date = datetime.strptime(room.limit_date, "%Y-%m-%d %H:%M:%S")
     if limit_date is None:
         return False
@@ -73,6 +72,7 @@ def grouped_hotel_class_by_date(hotel_classes):
     grouped_hotel_classes = {}
 
     for k, g in itertools.groupby(hotel_classes, lambda x: x[3]):
+        print("k", k)
         grouped_hotel_classes[k] = [{"RoomClass": item[1], "Price": item[2]} for item in g]
 
     return grouped_hotel_classes
