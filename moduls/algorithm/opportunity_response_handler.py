@@ -39,7 +39,7 @@ def process_segment(segment):
         unique_hotels = opportunitiesFinder.remove_duplicate_data(grouped_hotels)
         opportunities_list = extract_opportunities_from_db_type(opportunities)
         hotels_with_rooms = opportunitiesFinder.match_room_hotel(unique_hotels, opportunities_list)
-
+        print(len(hotels_with_rooms))
         for hotel_data in hotels_with_rooms.values():
             hotel = process_hotel_data(segment, hotel_data)
             if len(hotel.get("Rooms")) > 0:

@@ -48,7 +48,6 @@ def match_room_hotel(hotels, opportunities_list):
     for k, g in itertools.groupby(opportunities_list, lambda x: x[1]):
         for hotel in hotels:
             if k == hotel[0]:
-                print("g", list(g))
                 hotels_and_rooms[k] = list(hotel) + list(g)
     return hotels_and_rooms
 
