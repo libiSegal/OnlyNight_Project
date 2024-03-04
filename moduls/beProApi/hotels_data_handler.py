@@ -12,24 +12,27 @@ def handle_data_hotel(search_id, hotel):
     :param hotel: the data to be inserted
     :return: None
     """
-    item = hotel.get('Item')
-    address_info = hotel.get('AddressInfo')
-    position = hotel.get('Position')
-    images = hotel.get('Images')
-    hotel_data = HotelData(search_id, item.get('UniqueName'), item.get('Code'), item.get('Star'),
-                           address_info.get('Address'),
-                           address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
-                           address_info.get('Country'), position.get('Latitude'),
-                           position.get('Longitude'), position.get('PIP'))
-    print("bePro hotel name", item.get('UniqueName'))
-    hotel_id = sql_insert_queries.inset_hotel_data(hotel_data)[0]
-    hotel_id = int(hotel_id[0])
-    if type(images) is list and len(images) > 3:
-        images = images[:3]
-        for img in images:
-            sql_insert_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
-    rooms = hotel.get("RoomClasses")
-    return handle_room_data(hotel_id, rooms)
+    if isinstance(hotel, dict):
+        item = hotel.get('Item')
+        address_info = hotel.get('AddressInfo')
+        position = hotel.get('Position')
+        images = hotel.get('Images')
+        hotel_data = HotelData(search_id, item.get('UniqueName'), item.get('Code'), item.get('Star'),
+                               address_info.get('Address'),
+                               address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
+                               address_info.get('Country'), position.get('Latitude'),
+                               position.get('Longitude'), position.get('PIP'))
+        print("bePro hotel name", item.get('UniqueName'))
+        hotel_id = sql_insert_queries.inset_hotel_data(hotel_data)[0]
+        hotel_id = int(hotel_id[0])
+        if type(images) is list and len(images) > 3:
+            images = images[:3]
+            for img in images:
+                sql_insert_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
+        xsl_writer.insert_rooms_into_excel([[item.get('UniqueName')]])
+        rooms = hotel.get("RoomClasses")
+        return handle_room_data(hotel_id, rooms)
+    return []
 
 
 def handle_room_data(hotel_id, rooms):
@@ -69,5 +72,5 @@ def handle_room_data(hotel_id, rooms):
         if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
             if hotel_rooms.get('SysCode')[3] != 0:
                 pass
-    # xsl_writer.insert_rooms_into_excel(list_for_xsl)
+    xsl_writer.insert_rooms_into_excel(list_for_xsl)
     return rooms_ids

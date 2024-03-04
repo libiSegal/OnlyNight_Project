@@ -79,6 +79,7 @@ def exec_query_select_hotel_data(ids):
     """
     if type(ids) is list:
         if len(ids) > 0:
+            print("after", len(ids))
             string_ids = str(ids).replace("[", "").replace("]", "")
             sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
                         addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
@@ -89,6 +90,7 @@ def exec_query_select_hotel_data(ids):
                         JOIN positions ON positions.ID = Position_id
                         JOIN images ON images.Hotel_id = hotels.ID
                         WHERE hotels.ID IN ( {string_ids} )"""
+            print(sql)
             data = cursor.execute(sql).fetchall()
             return data
     return TypeError("ids parm must be a list")

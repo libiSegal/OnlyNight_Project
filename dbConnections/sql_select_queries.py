@@ -46,7 +46,7 @@ def select_data_of_opportunities(ids):
     :param ids: the ids of the room that they are opportunities
     :return: the data of the room by room
     """
-    print("ids", ids)
+    print("ids", len(ids))
 
     if ids is not None and not isinstance(ids, list):
         ids = [ids]
@@ -56,6 +56,7 @@ def select_data_of_opportunities(ids):
         db_data = connection.exec_query_select_rooms(ids)
         for row in db_data:
             res.append(row)
+        print("res", len(res))
         return res
 
     return []
@@ -69,7 +70,9 @@ def select_data_of_hotels_by_id(ids):
     """
     if isinstance(ids, int):
         ids = [ids]
+    print("in", len(ids))
     res = connection.exec_query_select_hotel_data(ids)
+    print("hotel data by id", len(res))
     if res:
         # hotels = [row for row in res]
         return list(res)

@@ -250,3 +250,7 @@ def insert_hotels_data_into_db(search_id):
         for hotel in hotels:
             ids += hotel_handler.handle_data_hotel(search_id, hotel)
     return ids
+
+
+def get_data_from_bePro_files():
+    return jdr.get_clean_data(r'files')
