@@ -1,7 +1,6 @@
 from datetime import datetime
 from moduls.beProApi import bepro_api
 from dbConnections import sql_select_queries
-from moduls.algorithm import statisticall_information, opportunitiesFinder
 from moduls.algorithm import opportunity_response_handler
 
 
@@ -55,7 +54,6 @@ def get_search_settings_id(city):
 
 
 def bePro_manual_search(hotel_name, stars, check_in, check_out, segment, radius, arbitrage):
-
     segment = segment.lower()
     segment = segment.capitalize()
     search_id = get_search_settings_id(segment)
@@ -74,8 +72,13 @@ def bePro_manual_search(hotel_name, stars, check_in, check_out, segment, radius,
     if not check_if_segment(segment):
         return "This city is not under surveillance"
 
+    if hotel_name == "":
+        state = False
+    else:
+        state = True
+
     rooms_ids = search_one_hotel(search_id, segment, stars, check_in, check_out, radius, False)
-    return general_search(rooms_ids, hotel_name, dict_segment, False, calc_profit_state=True)
+    return general_search(rooms_ids, hotel_name, dict_segment, state, calc_profit_state=True)
 
 
 def general_search(hotels, hotel_name, segment, one_hotel_state, calc_profit_state):
