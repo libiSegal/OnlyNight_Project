@@ -69,11 +69,10 @@ def calculate_hotel_room_class_price(hotel_id, room):
 
 def grouped_hotel_class_by_date(hotel_classes):
     """Group hotel classes by check in date"""
-    grouped_hotel_classes = {}
+    grouped_hotel_classes = []
 
     for k, g in itertools.groupby(hotel_classes, lambda x: x[3]):
-        print("k", k)
-        grouped_hotel_classes[k] = [{"RoomClass": item[1], "Price": item[2]} for item in g]
+        grouped_hotel_classes.append({"Date": k, "Values": [{"RoomClass": item[1], "Price": item[2]} for item in g]})
 
     return grouped_hotel_classes
 
