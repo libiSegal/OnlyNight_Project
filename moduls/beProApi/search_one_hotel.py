@@ -54,8 +54,7 @@ def get_search_settings_id(city):
 
 
 def bePro_manual_search(hotel_name, stars, check_in, check_out, segment, radius, arbitrage):
-    segment = segment.lower()
-    segment = segment.capitalize()
+
     search_id = get_search_settings_id(segment)
     dict_segment = {"Name": segment}
 
@@ -126,7 +125,6 @@ def processes_rooms_response(rooms_from_be_pro, segment, calc_profit_state):
                                                             room.get('Nights'), room_data.get('BToken'),
                                                             limit_date, room.get('Remarks'),
                                                             code, desc)
-
         if calc_profit_state:
             res_room = opportunity_response_handler.calculate_profit(segment, res_room)
 

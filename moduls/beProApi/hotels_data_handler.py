@@ -22,14 +22,14 @@ def handle_data_hotel(search_id, hotel):
                                address_info.get('Phone'), address_info.get('Fax'), address_info.get('City'),
                                address_info.get('Country'), position.get('Latitude'),
                                position.get('Longitude'), position.get('PIP'))
-        print("bePro hotel name", item.get('UniqueName'))
+        # print("bePro hotel name", item.get('UniqueName'))
         hotel_id = sql_insert_queries.inset_hotel_data(hotel_data)[0]
         hotel_id = int(hotel_id[0])
-        if type(images) is list and len(images) > 3:
-            images = images[:3]
+        if type(images) is list and len(images) >= 3:
+            images = images[: 3]
             for img in images:
                 sql_insert_queries.insert_images(hotel_id, img.get('ImageLink'), img.get('Desc'))
-        xsl_writer.insert_rooms_into_excel([[item.get('UniqueName')]])
+        # xsl_writer.insert_rooms_into_excel([[item.get('UniqueName')]])
         rooms = hotel.get("RoomClasses")
         return handle_room_data(hotel_id, rooms)
     return []
@@ -59,12 +59,12 @@ def handle_room_data(hotel_id, rooms):
                              limit_date, code, desc)
         # the new calculate func is here
         calculate_hotel_price.calculate_hotel_room_class_price(hotel_id, room_data)
-        list_for_xsl.append([room.get('Price').get('USD'), hotel_rooms.get('Desc'),
-                             hotel_rooms.get('SysCode'), room.get('CheckIn'),
-                             room.get('CheckOut'),
-                             room.get('Nights'), hotel_rooms.get('BToken'),
-                             room.get('Remarks'),
-                             limit_date, code, desc])
+        # list_for_xsl.append([room.get('Price').get('USD'), hotel_rooms.get('Desc'),
+        #                     hotel_rooms.get('SysCode'), room.get('CheckIn'),
+        #                     room.get('CheckOut'),
+        #                     room.get('Nights'), hotel_rooms.get('BToken'),
+        #                     room.get('Remarks'),
+        #                    limit_date, code, desc])
         room_id = sql_insert_queries.insert_room_data(room_data)
         if room_id is not None:
             room_id = int(room_id)
@@ -72,5 +72,5 @@ def handle_room_data(hotel_id, rooms):
         if hotel_rooms.get('SysCode') is not None and len(hotel_rooms.get('SysCode')) > 3:
             if hotel_rooms.get('SysCode')[3] != 0:
                 pass
-    xsl_writer.insert_rooms_into_excel(list_for_xsl)
+    # xsl_writer.insert_rooms_into_excel(list_for_xsl)
     return rooms_ids

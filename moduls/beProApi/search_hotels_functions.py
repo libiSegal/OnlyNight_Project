@@ -79,7 +79,6 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
         'Authorization': 'Basic Qz0xMzQ6RD02OkI9MjU4OlU9Njg1OlA9MzBDMUQ='
     }
     response = requests.request("POST", post_search_url, headers=headers, data=payload, verify=False)
-    print(response)
     return get_the_unique_key(response.json())
 
 
@@ -116,7 +115,7 @@ def get_hotels_request(unique_key):
         'BEPROCOMPANY': '134',
         'Authorization': 'Basic Qz0xMzQ6RD02OkI9MjU4OlU9Njg1OlA9MzBDMUQ='
     }
-    time_sleep = 6
+    time_sleep = 12
     time.sleep(time_sleep)
     response = requests.request("GET", get_hotels_details_url, headers=headers, verify=False)
     return response.text
@@ -246,7 +245,7 @@ def insert_hotels_data_into_db(search_id):
     :return: None
     """
     hotels = jdr.get_clean_data(r'files')
-    # print('len of bePro hotels', hotels)
+
     ids = []
     if hotels is not None:
         for hotel in hotels:

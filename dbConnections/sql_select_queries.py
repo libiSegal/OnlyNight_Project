@@ -1,3 +1,4 @@
+import numpy as np
 from dbConnections import sql_db_connection as connection
 
 
@@ -46,18 +47,20 @@ def select_data_of_opportunities(ids):
     :param ids: the ids of the room that they are opportunities
     :return: the data of the room by room
     """
-    print("ids", len(ids))
 
     if ids is not None and not isinstance(ids, list):
         ids = [ids]
     ids_length = len(ids)
-    res = []
     if ids_length > 0:
-        db_data = connection.exec_query_select_rooms(ids)
-        for row in db_data:
-            res.append(row)
-        print("res", len(res))
-        return res
+        rooms_data = []
+        np_ids = np.array(ids)
+        np_ids_split_array = np.array_split(np_ids, 10)
+        for np_ids in np_ids_split_array:
+
+            db_data = connection.exec_query_select_rooms(list(np_ids))
+
+            rooms_data.extend(db_data)
+        return rooms_data
 
     return []
 
@@ -68,16 +71,17 @@ def select_data_of_hotels_by_id(ids):
     :param ids:the ids of the hotels to select
     :return:the hotels data
     """
+
+    hotels_data = []
     if isinstance(ids, int):
         ids = [ids]
-    print("in", len(ids))
-    res = connection.exec_query_select_hotel_data(ids)
-    print("hotel data by id", len(res))
-    if res:
-        # hotels = [row for row in res]
-        return list(res)
-    else:
-        return []
+    np_ids = np.array(ids)
+    np_ids_split_array = np.array_split(np_ids, 10)
+    for ids_arr in np_ids_split_array:
+        res = connection.exec_query_select_hotel_data(list(ids_arr))
+
+        hotels_data.extend(res)
+    return hotels_data
 
 
 def select_room_price_by_id(ids):

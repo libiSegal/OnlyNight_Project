@@ -24,8 +24,10 @@ def get_adr_for_month(statistically_information):
     :param statistically_information: The statistically_information to get the adr value
     :return: The adr value from the statistically_information
     """
-    if isinstance(statistically_information, list) and isinstance(statistically_information[0], list):
-        return statistically_information[0][0]
+    if isinstance(statistically_information, list) and len(statistically_information) > 0:
+        if isinstance(statistically_information[0], list):
+            return statistically_information[0][0]
+        return 0
     return 0
 
 

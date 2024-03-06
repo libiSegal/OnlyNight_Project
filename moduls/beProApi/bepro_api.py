@@ -25,12 +25,10 @@ def search_hotels(search_type, search_id, search_key, stars, check_in, check_out
           "stars:", stars, "check_in:", check_in, "check_out:", check_out, "radius:", radius)
     try:
         country_code = ""
-        if search_type == 'hotels':
-            country_name = search_hotels_data.get_country_name(search_key)
-            country_code = search_hotels_data.convert_country_name_to_code(country_name)
-            print("country_name:", country_name, "country_code:", country_code)
-        elif search_type == "hotel":
-            country_code = ""
+        # if search_type == 'hotels':
+        #     country_name = search_hotels_data.get_country_name(search_key)
+        #     print("country_name:", country_name, "country_code:", country_code)
+
         geo_code = google_maps_api.get_geo_code(search_key)
         nights = search_hotels_data.calculate_number_of_nights(check_in, check_out)
         rooms = search_hotels_data.build_room(defn.numbers_adults, defn.numbers_children, defn.cnn_age)

@@ -65,9 +65,13 @@ def exec_query_select_rooms(ids):
               rooms.BToken, rooms.Limit_date,rooms.Remarks,
               metadata.Code, metadata.Description
               FROM rooms 
-             JOIN metadata ON metadata.Room_ID = rooms.ID
+             LEFT JOIN metadata ON metadata.Room_ID = rooms.ID
              WHERE rooms.ID IN ({string_ids})"""
-    return cursor.execute(sql).fetchall()
+    data = cursor.execute(sql).fetchall()
+
+    if data:
+        return data
+    return []
 
 
 def exec_query_select_hotel_data(ids):
@@ -77,20 +81,24 @@ def exec_query_select_hotel_data(ids):
     :param ids: A list of hotel IDs to select data for
     :return: The data retrieved from the database based on the specified IDs
     """
-    if type(ids) is list:
+    if isinstance(ids, int):
+        ids = [ids]
+    if isinstance(ids, list):
         if len(ids) > 0:
-            print("after", len(ids))
             string_ids = str(ids).replace("[", "").replace("]", "")
             sql = f"""SELECT hotels.ID, hotels.Name, hotels.Code, hotels.Stars,
                         addressesInfo.Address, addressesInfo.City, addressesInfo.Country,addressesInfo.Phone, addressesInfo.Fax,
                         positions.Latitude, positions.Longitude, positions.Pip,
                         images.Description, images.Img
                         FROM hotels 
-                        JOIN addressesInfo ON addressesInfo.ID = Address_id 
-                        JOIN positions ON positions.ID = Position_id
-                        JOIN images ON images.Hotel_id = hotels.ID
+                        LEFT JOIN addressesInfo ON addressesInfo.ID = Address_id 
+                        LEFT JOIN positions ON positions.ID = Position_id
+                        LEFT JOIN images ON images.Hotel_id = hotels.ID
                         WHERE hotels.ID IN ( {string_ids} )"""
-            print(sql)
+
             data = cursor.execute(sql).fetchall()
-            return data
-    return TypeError("ids parm must be a list")
+
+            if data:
+                return data
+
+    return []

@@ -32,14 +32,15 @@ def process_segment(segment):
     opportunities_ids = opportunitiesFinder.search_opportunities(segment)
 
     if not isinstance(opportunities_ids, int) and len(opportunities_ids) > 0:
+
         opportunities = sql_select_queries.select_data_of_opportunities(list(set(opportunities_ids)))
         hotels_ids = opportunitiesFinder.group_opportunities_hotels(opportunities)
-        hotels_data = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
+        hotels_data = opportunitiesFinder.get_opportunities_hotels(list(set(hotels_ids)))
         grouped_hotels = opportunitiesFinder.group_hotels_by_id(hotels_data)
         unique_hotels = opportunitiesFinder.remove_duplicate_data(grouped_hotels)
         opportunities_list = extract_opportunities_from_db_type(opportunities)
         hotels_with_rooms = opportunitiesFinder.match_room_hotel(unique_hotels, opportunities_list)
-        print(len(hotels_with_rooms))
+
         for hotel_data in hotels_with_rooms.values():
             hotel = process_hotel_data(segment, hotel_data)
             if len(hotel.get("Rooms")) > 0:

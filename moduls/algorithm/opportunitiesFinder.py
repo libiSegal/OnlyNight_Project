@@ -58,7 +58,7 @@ def get_opportunities_hotels(ids):
     :param ids: The hotels ids
     :return: The opportunities hotels data from the database
     """
-    print("before", len(ids))
+
     return sql_select_queries.select_data_of_hotels_by_id(ids)
 
 
