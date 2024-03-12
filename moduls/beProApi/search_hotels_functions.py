@@ -58,24 +58,25 @@ def search_post_request(search_key, country_code, geo_code, check_in, nights, ro
             "LanguageCode": "en",
             "CompanyId": definition.company_id,
             "DepartmentId": definition.department_id,
-            "BranchId": definition.branc_id,
+            "BranchId": definition.branch_id,
             "UserCode": definition.user_code,
             "MaxMilliSecondsTimeToWait": definition.max_milli_seconds_time_to_wait
         },
         "Header": {
             "CompanyId": definition.company_id,
             "DepartmentId": definition.department_id,
-            "BranchId": definition.branc_id,
+            "BranchId": definition.branch_id,
             "UserCode": definition.user_code,
             "UserId": definition.user_id,
             "UserPWD": definition.user_pwd
         }
     })
+
     headers = {
         'Accept': 'application/json',
-        'BEPROCOMPANY': '135',
+        'BEPROCOMPANY': '134',
         'Content-Type': 'application/json',
-        'Authorization': 'Basic Qz0xMzU6RD0xOkI9MjAwOlU9MjI1MDpQPTE5RDdC'
+        'Authorization': 'Basic Qz0xMzQ6RD02OkI9MjU4OlU9Njg1OlA9MzBDMUQ='
     }
     response = requests.request("POST", post_search_url, headers=headers, data=payload, verify=False)
     return get_the_unique_key(response.json())
@@ -111,10 +112,10 @@ def get_hotels_request(unique_key):
     get_hotels_details_url = (f"https://pub_srv.beprotravel.net/BePro/api/Hotels/GetJsonResults?"
                               f"token={unique_key}&compress=false")
     headers = {
-        'BEPROCOMPANY': '135',
-        'Authorization': 'Basic Qz0xMzU6RD0xOkI9MjAwOlU9MjI1MDpQPTE5RDdC'
+        'BEPROCOMPANY': '134',
+        'Authorization': 'Basic Qz0xMzQ6RD02OkI9MjU4OlU9Njg1OlA9MzBDMUQ='
     }
-    time_sleep = 6
+    time_sleep = 12
     time.sleep(time_sleep)
     response = requests.request("GET", get_hotels_details_url, headers=headers, verify=False)
     return response.text
@@ -244,9 +245,13 @@ def insert_hotels_data_into_db(search_id):
     :return: None
     """
     hotels = jdr.get_clean_data(r'files')
-    # print('len of bePro hotels', hotels)
+
     ids = []
     if hotels is not None:
         for hotel in hotels:
             ids += hotel_handler.handle_data_hotel(search_id, hotel)
     return ids
+
+
+def get_data_from_bePro_files():
+    return jdr.get_clean_data(r'files')

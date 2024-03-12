@@ -12,7 +12,6 @@ def get_opportunities_response():
     """
     res_hotels = []
     segments = get_segments()
-
     for segment in segments:
         hotels = process_segment(segment)
         res_hotels.extend(hotels)
@@ -30,11 +29,12 @@ def process_segment(segment):
         """
     hotels = []
     opportunities_ids = opportunitiesFinder.search_opportunities(segment)
-
+    print("opportunities_ids", len(opportunities_ids))
     if not isinstance(opportunities_ids, int) and len(opportunities_ids) > 0:
+
         opportunities = sql_select_queries.select_data_of_opportunities(list(set(opportunities_ids)))
         hotels_ids = opportunitiesFinder.group_opportunities_hotels(opportunities)
-        hotels_data = opportunitiesFinder.get_opportunities_hotels(hotels_ids)
+        hotels_data = opportunitiesFinder.get_opportunities_hotels(list(set(hotels_ids)))
         grouped_hotels = opportunitiesFinder.group_hotels_by_id(hotels_data)
         unique_hotels = opportunitiesFinder.remove_duplicate_data(grouped_hotels)
         opportunities_list = extract_opportunities_from_db_type(opportunities)
@@ -99,7 +99,7 @@ def get_segments():
     :return: A list of segments
     """
     segments_data = sql_select_queries.select_search_setting()
-    return [{"Id": seg[0], "Name": seg[1].split(",")[0]} for seg in segments_data]
+    return [{"Id": seg[0], "Name": seg[1].split(",")[0], "Stars": seg[2]} for seg in segments_data]
 
 
 def extract_opportunities_from_db_type(opportunities):

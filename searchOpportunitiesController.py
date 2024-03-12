@@ -82,10 +82,6 @@ async def charge_condition(room_token, price):
 async def get_opportunities():
     try:
         hotels = opportunity_response_handler.get_opportunities_response()
-        for hotel in hotels.get("Hotels"):
-            print(hotel.get("Item").get("Name"), len(hotel.get("Rooms")))
-            for room in hotel.get("Rooms"):
-                print(room.get("Desc"))
         return hotels
     except HTTPException:
         return HTTPException(status_code=500, detail="Sorry, an error occurred")

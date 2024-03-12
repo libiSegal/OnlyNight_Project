@@ -7,7 +7,8 @@ from dbConnections import sql_select_queries
 
 def remove_special_chars(input_string):
     """Remove special characters from the input string."""
-    return re.sub(r'[^a-zA-Z0-9\s]', '', input_string)
+    if input_string:
+        return re.sub(r'[^a-zA-Z0-9\s]', '', input_string)
 
 
 def check_room_class_exist(room_class, room_classes):
@@ -24,9 +25,10 @@ def check_room_class_exist(room_class, room_classes):
 
 def check_cancellation_policy(room):
     """Check if date of cancellation policy is effect."""
-    limit_date = datetime.strptime(room.limit_date, "%Y-%m-%d %H:%M:%S")
-    if limit_date is None:
+
+    if room.limit_date is None or room.limit_date == '':
         return False
+    limit_date = datetime.strptime(room.limit_date, "%Y-%m-%d %H:%M:%S")
     if limit_date <= datetime.today():
         return False
     return True
@@ -89,8 +91,19 @@ def short_info_by_month(info):
 
 def get_history_prices(hotel_id):
     """Get hotel monthly prices for last year"""
+    info = []
+    year = datetime.now().year - 1
     segment_id = sql_select_queries.select_segment_id_of_hotel(hotel_id)
-    info = sql_select_queries.select_statistical_information_by_id(segment_id[0][0], datetime.today().year - 1)
+
+    for month in range(1, 13):
+        res = sql_select_queries.select_statistical_information_by_id(segment_id[0][0],
+                                                                      year, month)
+        print(res)
+        if not res:
+            res = sql_select_queries.select_statistical_information_by_id(segment_id[0][0],
+                                                                          year - 1, month)
+        print(res)
+        info += res
     return short_info_by_month(info)
 
 

@@ -10,13 +10,18 @@ def search_opportunities(segment):
     :param segment: The segment to search for opportunities
     :return: A list of opportunities ids
     """
+
     opportunities = []
     arbitrage = 50
     rooms = statisticall_information.get_rooms_prices(segment.get("Id"))
+    print("rooms", len(rooms))
     shorted_rooms_by_month = statisticall_information.short_rooms_by_month(rooms)
     for i in range(1, 13):
-        history_data = statisticall_information.get_statistically_information_for_segment(segment, i,
-                                                                                          datetime.date.today().year - 1)
+        history_data = statisticall_information.get_statistically_information_for_segment(
+            segment, i, datetime.date.today().year - 1)
+        if len(history_data) == 0:
+            history_data = statisticall_information.get_statistically_information_for_segment(
+                segment, i, datetime.date.today().year - 2)
         if len(history_data) != 0:
             history_price = statisticall_information.get_adr_for_month(history_data)
             for room in shorted_rooms_by_month[i - 1]:
@@ -58,6 +63,7 @@ def get_opportunities_hotels(ids):
     :param ids: The hotels ids
     :return: The opportunities hotels data from the database
     """
+
     return sql_select_queries.select_data_of_hotels_by_id(ids)
 
 
