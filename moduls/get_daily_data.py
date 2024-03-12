@@ -20,7 +20,7 @@ def get_search_setting():
 def get_daily_data():
     dates = get_dates_in_year()
     search_settings = get_search_setting()
-    for search_setting in search_settings:
+    for search_setting in search_settings[1:]:
         daily_data_for_city(dates, search_setting)
 
 

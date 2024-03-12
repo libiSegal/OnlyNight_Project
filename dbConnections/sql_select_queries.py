@@ -35,9 +35,10 @@ def select_room_prices_by_segment_id(seg_id):
     return connection.exec_stored_procedures(procedure_name, seg_id)
 
 
-def select_statistical_information_by_id(segment_id, year):
+def select_statistical_information_by_id(segment_id, year, month):
     procedure_name = 'dbo.selectStatisticalInformationById'
-    values = (segment_id, year)
+    values = (segment_id, year, month)
+    print(values)
     return connection.exec_stored_procedures(procedure_name, values)
 
 

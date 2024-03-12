@@ -91,8 +91,19 @@ def short_info_by_month(info):
 
 def get_history_prices(hotel_id):
     """Get hotel monthly prices for last year"""
+    info = []
+    year = datetime.now().year - 1
     segment_id = sql_select_queries.select_segment_id_of_hotel(hotel_id)
-    info = sql_select_queries.select_statistical_information_by_id(segment_id[0][0], datetime.today().year - 1)
+
+    for month in range(1, 13):
+        res = sql_select_queries.select_statistical_information_by_id(segment_id[0][0],
+                                                                      year, month)
+        print(res)
+        if not res:
+            res = sql_select_queries.select_statistical_information_by_id(segment_id[0][0],
+                                                                          year - 1, month)
+        print(res)
+        info += res
     return short_info_by_month(info)
 
 
